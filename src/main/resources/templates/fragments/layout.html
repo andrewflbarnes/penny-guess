@@ -1,5 +1,5 @@
 <!doctype html>
-<html th:fragment="layout (template, menu)">
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout (template)">
 <head>
     <title>Penny is...</title>
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
@@ -42,7 +42,7 @@
         </div>
     </nav>
     -->
-    <div th:replace="${template}"/>
+    <div th:replace="${template}"></div>
 
     <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
