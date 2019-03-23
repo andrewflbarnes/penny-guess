@@ -1,32 +1,87 @@
 const initialLength = 5;
 const speed = 15;
 
-let px = 10;
-let py = 10;
-let vx = 0;
-let vy = 0;
-let lastvx = 0;
-let lastvy = 0;
-let tc = 20;
-let gs = 20;
-let ax = 15;
-let ay = 15;
 let canvas;
 let ctx;
-let trail = [];
-let tail = initialLength;
 
-function snake() {
+let trail;
+let px;
+let py;
+let vx;
+let vy;
+let lastvx;
+let lastvy;
+let tc;
+let gs;
+let ax;
+let ay;
+let tail;
+let snakeInstance;
+let score;
+let highScore;
+let paused;
 
+function getSnakeCanvas() {
   canvas = document.getElementById('snake');
   ctx = canvas.getContext('2d');
-  document.addEventListener("keydown", keyPush);
-  setInterval(game, 1000/speed);
+}
 
+function initSnake() {
+  //position
+  px = 10;
+  py = 10;
+  // velocity
+  vx = 0;
+  vy = 0;
+  // last velocity - helps with rapid multiple key presses
+  lastvx = 0;
+  lastvy = 0;
+  // tile count and tile size
+  tc = 20;
+  gs = 20;
+  // apple
+  ax = 15;
+  ay = 15;
+  // snake length
+  tail = initialLength;
+  trail = [];
+  // state interval tracker
+  snakeInstance = null;
+  // score
+  score = 0;
+  highScore = 0;
+  paused = false;
+  document.addEventListener("keydown", keyPush);
+}
+
+function unInitSnake() {
+  document.removeEventListener("keydown", keyPush);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// Handles pressing a pause button (resetAction false) or a close/new button (resetAction true)
+function snakeTrigger(resetAction = false) {
+  if (snakeInstance || (resetAction && paused)) {
+    // Stop/pause
+    clearInterval(snakeInstance);
+    snakeInstance = null;
+    if (resetAction) {
+      unInitSnake();
+      paused = false;
+    } else {
+      paused = true;
+    }
+  } else {
+    // Start/resume
+    paused = false;
+    if (resetAction) {
+      initSnake();
+    }
+    snakeInstance = setInterval(game, 1000/speed);
+  }
 }
 
 function game() {
-  console.log({px, py, vx, vy, ax, ay, gs, tc, tail, trail});
   px += vx;
   py += vy;
   lastvx = vx;
@@ -90,6 +145,9 @@ function newApple() {
 
 function keyPush(evt) {
   switch (evt.keyCode) {
+    case 32:
+      snakeTrigger();
+      break;
     case 37:
       if (lastvx === 1) {
         return;
@@ -111,12 +169,15 @@ function keyPush(evt) {
       vx = 1;
       vy = 0;
       break;
-    case 40 :
+    case 40:
       if (lastvy === -1) {
         return;
       }
       vx = 0;
       vy = 1;
+      break;
+    case 81:
+      snakeTrigger(true);
       break;
   }
 }

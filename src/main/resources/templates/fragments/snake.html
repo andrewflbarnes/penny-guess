@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="snake">
-<body>
+<body onLoad="getSnakeCanvas()">
 
-  <script type="text/javascript" th:src="@{snake.js}"></script>
+  <script type="text/javascript" th:src="@{js/snake.js}"></script>
   <canvas id="snake" height="400" width="400"></canvas>
 </body>
