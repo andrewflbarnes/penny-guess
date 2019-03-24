@@ -123,6 +123,8 @@ function updateSnakeState() {
   if (py > tiles - 1) {
     py = 0;
   }
+
+  trail.push({x: px, y: py});
 }
 
 function drawBackground() {
@@ -154,8 +156,6 @@ function drawTile(x, y, color) {
 }
 
 function trackTailLength() {
-  trail.push({x: px, y: py});
-
   while (trail.length > tail) {
     trail.shift();
   }
