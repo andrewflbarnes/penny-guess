@@ -99,7 +99,7 @@ function game() {
   drawApple();
   drawSnake();
 
-  updateScores();
+  drawScores();
 }
 
 function updateSnakeState() {
@@ -161,12 +161,13 @@ function trackTailLength() {
   }
 }
 
-function updateScores() {
-  scoreElement.innerHTML = score;
+function drawScores() {
   if (score > highScore) {
     highScore = score;
-    highScoreElement.innerHTML = highScore;
   }
+
+  scoreElement.innerHTML = score;
+  highScoreElement.innerHTML = highScore;
 }
 
 function tailDeath() {
