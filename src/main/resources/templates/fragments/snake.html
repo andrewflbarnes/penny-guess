@@ -1,10 +1,10 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="snake">
-<body onLoad="initSnake()">
-  <script type="text/javascript" th:src="@{js/snake.js}"></script>
+<body>
+  <script type="module" th:src="@{js/snake/snake.js}"></script>
 
-  <div id="snake-game" style="visibility:hidden">
-    <canvas id="snake" height="400" width="400"></canvas>
+  <div id="snake-board" style="visibility:hidden">
+    <canvas id="snake-canvas" height="400" width="400"></canvas>
     <h2>Score: <span id="snake-score"></span></h2>
     <h2>High Score: <span id="snake-high-score"></span></h2>
   </div>
