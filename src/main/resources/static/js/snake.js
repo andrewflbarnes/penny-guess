@@ -192,7 +192,7 @@ function spawnApple() {
     ay = Math.floor(Math.random() * tiles);
 
     for (let i = 0; i < trail.length; i++) {
-      if (ax === trail[i].x && trail[i].y === py) {
+      if (ax === trail[i].x && ay === trail[i].y) {
         needNewApple = true;
         break;
       }
