@@ -2,10 +2,11 @@ const startPosition = 10;
 const initialLength = 5;
 
 export default class SnakeEngine {
-  constructor() {
+  constructor(tiles, drawer) {
     this.state = {
+      renderer: drawer,
       speed: 15,
-      tiles: 20,
+      tiles: tiles,
       backgroundColor: 'black',
       appleColor: 'red',
       snakeHeadColor: 'lime',
@@ -47,23 +48,10 @@ SnakeEngine.prototype.resetState = function() {
     state.paused = false;
 };
 
-SnakeEngine.prototype.initSnake = function() {
-  const state = this.getState();
-
-  state.snakeGame = document.getElementById('snake-game');
-  state.scoreElement = document.getElementById('snake-score');
-  state.highScoreElement = document.getElementById('snake-high-score');
-  state.canvas = document.getElementById('snake');
-  state.ctx = state.canvas.getContext('2d');
-
-  state.canvasSize = state.canvas.width;
-  state.tileSize = state.canvasSize / state.tiles;
-};
-
 SnakeEngine.prototype.initSnakeGame = function() {
   const state = this.getState();
 
-  state.snakeGame.style.visibility = 'visible';
+  state.renderer.showBoard();
   state.eventListener = (evt) => this.keyPush(evt);
   document.addEventListener("keydown", state.eventListener);
   this.resetState();
@@ -73,8 +61,8 @@ SnakeEngine.prototype.initSnakeGame = function() {
 SnakeEngine.prototype.unInitSnake = function() {
   const state = this.getState();
   document.removeEventListener("keydown", state.eventListener);
-  state.ctx.clearRect(0, 0, state.canvasSize, state.canvasSize);
-  state.snakeGame.style.visibility = 'hidden';
+  state.renderer.clearCanvas();
+  state.renderer.hideBoard();
 };
 
 // Handles pressing a pause button (resetAction false) or a close/new button (resetAction true)
@@ -140,59 +128,12 @@ SnakeEngine.prototype.updateSnakeState = function() {
   state.trail.push({x: state.px, y: state.py});
 };
 
-SnakeEngine.prototype.drawBackground = function() {
-  const state = this.getState();
-
-  state.ctx.fillStyle = state.backgroundColor;
-  state.ctx.fillRect(0, 0, state.canvasSize, state.canvasSize);
-};
-
-SnakeEngine.prototype.drawApple = function() {
-  const state = this.getState();
-
-  this.drawTile(state.ax, state.ay, state.appleColor);
-};
-
-SnakeEngine.prototype.drawSnake = function() {
-  const state = this.getState();
-
-  for (let i = 0; i < state.trail.length; i++) {
-    let color = state.snakeBodyColor;
-
-    if (i === state.trail.length - 1) {
-      color = state.snakeHeadColor;
-    } else if (state.trail[i].x === state.px && state.trail[i].y === state.py) {
-      this.tailDeath();
-    }
-
-    this.drawTile(state.trail[i].x, state.trail[i].y, color);
-  }
-};
-
-SnakeEngine.prototype.drawTile = function(x, y, color) {
-  const state = this.getState();
-
-  state.ctx.fillStyle = color;
-  state.ctx.fillRect(x * state.tileSize + 1, y * state.tileSize + 1, state.tileSize - 2, state.tileSize - 2);
-};
-
 SnakeEngine.prototype.trackTailLength = function() {
   const state = this.getState();
 
   while (state.trail.length > state.tail) {
     state.trail.shift();
   }
-};
-
-SnakeEngine.prototype.drawScores = function() {
-  const state = this.getState();
-
-  if (state.score > state.highScore) {
-    state.highScore = state.score;
-  }
-
-  state.scoreElement.innerHTML = state.score;
-  state.highScoreElement.innerHTML = state.highScore;
 };
 
 SnakeEngine.prototype.tailDeath = function() {
@@ -230,6 +171,49 @@ SnakeEngine.prototype.spawnApple = function() {
       }
     }
   }
+};
+
+SnakeEngine.prototype.drawApple = function() {
+  const state = this.getState();
+
+  this.drawTile(state.ax, state.ay, state.appleColor);
+};
+
+SnakeEngine.prototype.drawSnake = function() {
+  const state = this.getState();
+
+  for (let i = 0; i < state.trail.length; i++) {
+    let color = state.snakeBodyColor;
+
+    if (i === state.trail.length - 1) {
+      color = state.snakeHeadColor;
+    } else if (state.trail[i].x === state.px && state.trail[i].y === state.py) {
+      this.tailDeath();
+    }
+
+    this.drawTile(state.trail[i].x, state.trail[i].y, color);
+  }
+};
+
+SnakeEngine.prototype.drawScores = function() {
+  const state = this.getState();
+
+  if (state.score > state.highScore) {
+    state.highScore = state.score;
+  }
+
+  state.renderer.updateHighScore(state.highScore);
+  state.renderer.updateScore(state.score);
+};
+
+SnakeEngine.prototype.drawTile = function(x, y, color) {
+  this.getState().renderer.drawTile(color, x, y)
+};
+
+SnakeEngine.prototype.drawBackground = function() {
+  const state = this.getState();
+
+  state.renderer.drawBackground(state.backgroundColor);
 };
 
 SnakeEngine.prototype.keyPush = function(evt) {
