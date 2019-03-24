@@ -5,7 +5,7 @@
 
 <div class="jumbotron text-center">
   <div class="container">
-    <h1 th:text="${message}" onClick="snakeTrigger(true)">Message for Penny</h1>
+    <h1 id="penny-message" th:text="${message}">Message for Penny</h1>
     <div th:insert="fragments/snake :: snake"></div>
   </div>
 </div>
