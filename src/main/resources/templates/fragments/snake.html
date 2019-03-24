@@ -1,11 +1,13 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="snake">
 <body>
-  <script type="module" th:src="@{js/snake/snake.js}"></script>
-
   <div id="snake-board" style="visibility:hidden">
-    <canvas id="snake-canvas" height="400" width="400"></canvas>
-    <h2>Score: <span id="snake-score"></span></h2>
-    <h2>High Score: <span id="snake-high-score"></span></h2>
+    <canvas id="snake-canvas" height="400" width="400" onclick="rotateColorScheme()"></canvas>
+    <h2>Score: <span class="snake-score"></span></h2>
+    <h2>High Score: <span class="snake-high-score"></span></h2>
   </div>
+
+  <script type="text/javascript" th:src="@{js/snake/DocumentSnakeRenderer.js}"></script>
+  <script type="text/javascript" th:src="@{js/snake/SnakeEngine.js}"></script>
+  <script type="text/javascript" th:src="@{js/snake/snake.js}"></script>
 </body>

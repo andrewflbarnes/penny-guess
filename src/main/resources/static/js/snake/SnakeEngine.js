@@ -1,171 +1,181 @@
 const startPosition = 10;
 const initialLength = 5;
 
-export default class SnakeEngine {
-  constructor(tiles, drawer) {
-    this.state = {
-      renderer: drawer,
-      speed: 15,
-      tiles: tiles,
-      backgroundColor: 'black',
-      appleColor: 'red',
-      snakeHeadColor: 'lime',
-      snakeBodyColor: 'green',
-      px: startPosition,
-      py: startPosition,
-      vx: 0,
-      vy: 0,
-      ax: 0,
-      ay: 0,
-      lastvx: 0,
-      lastvy: 0,
-      tail: initialLength,
-      trail: [],
-      score: 0,
-      highScore: 0,
-      paused: false,
-    };
-  }
+function SnakeEngine(tiles, renderer, options) {
 
-  getState() {
-    return this.state;
-  }
+  options = options || {};
+
+  this.tiles = tiles;
+  this.renderer = renderer;
+  this.backgroundColor = options.bgColor || 'black';
+  this.appleColor = options.appleColor || 'red';
+  this.snakeHeadColor = options.snakeHeadColor || 'lime';
+  this.snakeBodyColor = options.snakeBodyColor || 'green';
+  this.speed = options.speed || 15;
+  this.px = startPosition;
+  this.py = startPosition;
+  this.vx = 0;
+  this.vy = 0;
+  this.ax = 0;
+  this.ay = 0;
+  this.lastvx = 0;
+  this.lastvy = 0;
+  this.tail = initialLength;
+  this.trail = [];
+  this.score = 0;
+  this.highScore = 0;
+  this.paused = false;
 }
 
+SnakeEngine.prototype.setColorScheme = function(scheme) {
+  const self = this;
+  scheme = scheme || {};
+
+  self.backgroundColor = scheme.bgColor || self.options.backgroundColor;
+  self.appleColor = scheme.appleColor || self.appleColor;
+  self.snakeHeadColor = scheme.snakeHeadColor || self.snakeHeadColor;
+  self.snakeBodyColor = scheme.snakeBodyColor || self.snakeBodyColor;
+};
+
 SnakeEngine.prototype.resetState = function() {
-  const state = this.getState();
-    state.px = startPosition;
-    state.py = startPosition;
-    state.vx = 0;
-    state.vy = 0;
-    state.ax = 0;
-    state.ay = 0;
-    state.lastvx = 0;
-    state.lastvy = 0;
-    state.tail = initialLength;
-    state.trail = [];
-    state.score = 0;
-    state.paused = false;
+  const self = this;
+
+  self.px = startPosition;
+  self.py = startPosition;
+  self.vx = 0;
+  self.vy = 0;
+  self.ax = 0;
+  self.ay = 0;
+  self.lastvx = 0;
+  self.lastvy = 0;
+  self.tail = initialLength;
+  self.trail = [];
+  self.score = 0;
+  self.paused = false;
 };
 
 SnakeEngine.prototype.initSnakeGame = function() {
-  const state = this.getState();
+  const self = this;
 
-  state.renderer.showBoard();
-  state.eventListener = (evt) => this.keyPush(evt);
-  document.addEventListener("keydown", state.eventListener);
-  this.resetState();
-  this.spawnApple();
+  self.renderer.showBoard();
+  self.eventListener = function(evt) {self.keyPush(evt)};
+  document.addEventListener("keydown", self.eventListener);
+  self.resetState();
+  self.spawnApple();
 };
 
 SnakeEngine.prototype.unInitSnake = function() {
-  const state = this.getState();
-  document.removeEventListener("keydown", state.eventListener);
-  state.renderer.clearCanvas();
-  state.renderer.hideBoard();
+  const self = this;
+
+  document.removeEventListener("keydown", self.eventListener);
+  self.renderer.clearCanvas();
+  self.renderer.hideBoard();
 };
 
 // Handles pressing a pause button (resetAction false) or a close/new button (resetAction true)
 SnakeEngine.prototype.snakeTrigger = function(resetAction = false) {
-  const state = this.getState();
+  const self = this;
 
-  if (state.snakeInstance || (resetAction && state.paused)) {
+  if (self.snakeInstance || (resetAction && self.paused)) {
     // Stop/pause
-    clearInterval(state.snakeInstance);
-    state.snakeInstance = null;
+    clearInterval(self.snakeInstance);
+    self.snakeInstance = null;
     if (resetAction) {
-      this.unInitSnake();
-      state.paused = false;
+      self.unInitSnake();
+      self.paused = false;
     } else {
-      state.paused = true;
+      self.paused = true;
     }
   } else {
     // Start/resume
-    state.paused = false;
+    self.paused = false;
     if (resetAction) {
-      this.initSnakeGame();
+      self.initSnakeGame();
     }
-    state.snakeInstance = setInterval(() => this.game(), 1000 / state.speed);
+
+    self.snakeInstance = setInterval(function() {self.game()}, 1000 / self.speed);
   }
 };
 
 SnakeEngine.prototype.game = function() {
-  this.updateSnakeState();
-  this.checkAteApple();
-  this.trackTailLength();
+  const self = this;
 
-  this.drawBackground();
-  this.drawApple();
-  this.drawSnake();
+  self.updateSnakeState();
+  self.checkAteApple();
+  self.trackTailLength();
 
-  this.drawScores();
+  self.drawBackground();
+  self.drawApple();
+  self.drawSnake();
+
+  self.drawScores();
 };
 
 SnakeEngine.prototype.updateSnakeState = function() {
-  const state = this.getState();
+  const self = this;
 
-  state.px += state.vx;
-  state.py += state.vy;
-  state.lastvx = state.vx;
-  state.lastvy = state.vy;
+  self.px += self.vx;
+  self.py += self.vy;
+  self.lastvx = self.vx;
+  self.lastvy = self.vy;
 
-  if (state.px < 0) {
-    state.px = state.tiles - 1
+  if (self.px < 0) {
+    self.px = self.tiles - 1
   }
 
-  if (state.px > state.tiles - 1) {
-    state.px = 0;
+  if (self.px > self.tiles - 1) {
+    self.px = 0;
   }
 
-  if (state.py < 0) {
-    state.py = state.tiles - 1;
+  if (self.py < 0) {
+    self.py = self.tiles - 1;
   }
 
-  if (state.py > state.tiles - 1) {
-    state.py = 0;
+  if (self.py > self.tiles - 1) {
+    self.py = 0;
   }
 
-  state.trail.push({x: state.px, y: state.py});
+  self.trail.push({x: self.px, y: self.py});
 };
 
 SnakeEngine.prototype.trackTailLength = function() {
-  const state = this.getState();
+  const self = this;
 
-  while (state.trail.length > state.tail) {
-    state.trail.shift();
+  while (self.trail.length > self.tail) {
+    self.trail.shift();
   }
 };
 
 SnakeEngine.prototype.tailDeath = function() {
-  const state = this.getState();
+  const self = this;
 
-  state.tail = initialLength;
-  state.score = 0;
+  self.tail = initialLength;
+  self.score = 0;
 };
 
 SnakeEngine.prototype.checkAteApple = function() {
-  const state = this.getState();
+  const self = this;
 
-  if (state.ax === state.px && state.ay === state.py) {
-    state.score += state.speed;
-    state.tail++;
-    this.spawnApple();
+  if (self.ax === self.px && self.ay === self.py) {
+    self.score += self.speed;
+    self.tail++;
+    self.spawnApple();
   }
 };
 
 SnakeEngine.prototype.spawnApple = function() {
-  const state = this.getState();
+  const self = this;
 
   let needNewApple = true;
 
   while (needNewApple) {
     needNewApple = false;
 
-    state.ax = Math.floor(Math.random() * state.tiles);
-    state.ay = Math.floor(Math.random() * state.tiles);
+    self.ax = Math.floor(Math.random() * self.tiles);
+    self.ay = Math.floor(Math.random() * self.tiles);
 
-    for (let i = 0; i < state.trail.length; i++) {
-      if (state.ax === state.trail[i].x && state.ay === state.trail[i].y) {
+    for (let i = 0; i < self.trail.length; i++) {
+      if (self.ax === self.trail[i].x && self.ay === self.trail[i].y) {
         needNewApple = true;
         break;
       }
@@ -174,91 +184,93 @@ SnakeEngine.prototype.spawnApple = function() {
 };
 
 SnakeEngine.prototype.drawApple = function() {
-  const state = this.getState();
+  const self = this;
 
-  this.drawTile(state.ax, state.ay, state.appleColor);
+  self.drawTile(self.ax, self.ay, self.appleColor);
 };
 
 SnakeEngine.prototype.drawSnake = function() {
-  const state = this.getState();
+  const self = this;
 
-  for (let i = 0; i < state.trail.length; i++) {
-    let color = state.snakeBodyColor;
+  for (let i = 0; i < self.trail.length; i++) {
+    let color = self.snakeBodyColor;
 
-    if (i === state.trail.length - 1) {
-      color = state.snakeHeadColor;
-    } else if (state.trail[i].x === state.px && state.trail[i].y === state.py) {
-      this.tailDeath();
+    if (i === self.trail.length - 1) {
+      color = self.snakeHeadColor;
+    } else if (self.trail[i].x === self.px && self.trail[i].y === self.py) {
+      self.tailDeath();
     }
 
-    this.drawTile(state.trail[i].x, state.trail[i].y, color);
+    self.drawTile(self.trail[i].x, self.trail[i].y, color);
   }
 };
 
 SnakeEngine.prototype.drawScores = function() {
-  const state = this.getState();
+  const self = this;
 
-  if (state.score > state.highScore) {
-    state.highScore = state.score;
+  if (self.score > self.highScore) {
+    self.highScore = self.score;
   }
 
-  state.renderer.updateHighScore(state.highScore);
-  state.renderer.updateScore(state.score);
+  self.renderer.updateHighScore(self.highScore);
+  self.renderer.updateScore(self.score);
 };
 
 SnakeEngine.prototype.drawTile = function(x, y, color) {
-  this.getState().renderer.drawTile(color, x, y)
+  const self = this;
+
+  self.renderer.drawTile(color, x, y)
 };
 
 SnakeEngine.prototype.drawBackground = function() {
-  const state = this.getState();
+  const self = this;
 
-  state.renderer.drawBackground(state.backgroundColor);
+  self.renderer.drawBackground(self.backgroundColor, self.snakeHeadColor);
 };
 
 SnakeEngine.prototype.keyPush = function(evt) {
-  const state = this.getState();
+  const self = this;
 
   switch (evt.keyCode) {
     case 32:
       // space
-      this.snakeTrigger();
+      self.snakeTrigger();
       break;
     case 37:
       // left
-      if (state.lastvx === 1) {
+      if (self.lastvx === 1) {
         return;
       }
-      state.vx = -1;
-      state.vy = 0;
+      self.vx = -1;
+      self.vy = 0;
       break;
     case 38:
       // up
-      if (state.lastvy === 1) {
+      if (self.lastvy === 1) {
         return;
       }
-      state.vx = 0;
-      state.vy = -1;
+      self.vx = 0;
+      self.vy = -1;
       break;
     case 39:
       // right
-      if (state.lastvx === -1) {
+      if (self.lastvx === -1) {
         return;
       }
-      state.vx = 1;
-      state.vy = 0;
+      self.vx = 1;
+      self.vy = 0;
       break;
     case 40:
       // down
-      if (state.lastvy === -1) {
+      if (self.lastvy === -1) {
         return;
       }
-      state.vx = 0;
-      state.vy = 1;
+      self.vx = 0;
+      self.vy = 1;
       break;
     case 81:
       // q
-      this.snakeTrigger(true);
+      self.snakeTrigger(true);
       break;
   }
 };

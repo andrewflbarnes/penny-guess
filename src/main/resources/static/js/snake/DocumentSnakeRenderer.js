@@ -1,56 +1,61 @@
-export default class DocumentSnakeRenderer {
-  constructor(tileCount, idCanvas, idBoard, idScore, idHighScore) {
-    const canvas = document.getElementById(idCanvas);
-    const context = canvas.getContext('2d');
-    const tileSize = canvas.height / tileCount;
+function DocumentSnakeRenderer(tileCount, idCanvas, idBoard, classScore, classHighScore) {
+  this.canvas = document.getElementById(idCanvas);
+  this.tileSize = this.canvas.height / tileCount;
+  this.context = this.canvas.getContext('2d');
+  this.canvasSize = this.canvas.height;
+  this.elBoard = KITTEH(idBoard);
+  this.elHighScore = KITTEH(classHighScore);
+  this.elScore = KITTEH(classScore);
+}
 
-    this.state = {
-      tileCount: tileCount,
-      tileSize: tileSize,
-      context: context,
-      canvasSize: canvas.height,
-      elBoard: document.getElementById(idBoard),
-      elHighScore: document.getElementById(idHighScore),
-      elScore: document.getElementById(idScore),
-    }
-  };
+DocumentSnakeRenderer.prototype.drawBackground = function(color, borderColor) {
+  const self = this;
+  const context = self.context;
 
-  getState() {
-    return this.state;
-  };
+  context.fillStyle = color;
+  context.fillRect(0, 0, self.canvasSize, self.canvasSize);
+  if (borderColor) {
+    context.strokeStyle = borderColor;
+    context.lineWidth = 2;
+    context.strokeRect(0, 0, self.canvasSize, self.canvasSize);
+  }
 };
 
-DocumentSnakeRenderer.prototype.drawBackground = function (color) {
-  const state = this.getState();
-  state.context.fillStyle = color;
-  state.context.fillRect(0, 0, state.canvasSize, state.canvasSize);
+DocumentSnakeRenderer.prototype.drawTile = function(color, x, y) {
+  const self = this;
+  const tileSize = self.tileSize;
+  const context = self.context;
+
+  context.fillStyle = color;
+  context.fillRect(x * tileSize + 1, y * tileSize + 1, tileSize - 2, tileSize - 2);
 };
 
-DocumentSnakeRenderer.prototype.drawTile = function (color, x, y) {
-  const state = this.getState();
-  const tileSize = state.tileSize;
-  state.context.fillStyle = color;
-  state.context.fillRect(x * tileSize + 1, y * tileSize + 1, tileSize - 2, tileSize - 2);
+DocumentSnakeRenderer.prototype.updateHighScore = function(score) {
+  const self = this;
+
+  self.elHighScore.setContent(score);
 };
 
-DocumentSnakeRenderer.prototype.updateHighScore = function (score) {
-  this.getState().elHighScore.innerHTML = score;
+DocumentSnakeRenderer.prototype.updateScore = function(score) {
+  const self = this;
+
+  self.elScore.setContent(score);
 };
 
-DocumentSnakeRenderer.prototype.updateScore = function (score) {
-  this.getState().elScore.innerHTML = score;
+DocumentSnakeRenderer.prototype.hideBoard = function() {
+  const self = this;
+
+  self.elBoard.hide();
 };
 
-DocumentSnakeRenderer.prototype.hideBoard = function () {
-  this.getState().elBoard.style.visibility = 'hidden';
+DocumentSnakeRenderer.prototype.showBoard = function() {
+  const self = this;
+
+  self.elBoard.show();
 };
 
-DocumentSnakeRenderer.prototype.showBoard = function () {
-  this.getState().elBoard.style.visibility = 'visible';
-};
+DocumentSnakeRenderer.prototype.clearCanvas = function() {
+  const self = this;
 
-DocumentSnakeRenderer.prototype.clearCanvas = function () {
-  const state = this.getState();
-
-  state.context.clearRect(0, 0, state.canvasSize, state.canvasSize);
+  self.context.clearRect(0, 0, self.canvasSize, self.canvasSize);
 };
