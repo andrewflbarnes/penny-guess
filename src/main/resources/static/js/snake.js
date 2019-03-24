@@ -1,6 +1,17 @@
 const initialLength = 5;
+// Speed also defines the score per apple
 const speed = 15;
+const startPosition = 10;
+const tiles = 20;
+let canvasSize;
+let tileSize;
 
+let highScore = 0;
+let score;
+
+let snakeGame;
+let scoreElement;
+let highScoreElement;
 let canvas;
 let ctx;
 
@@ -11,37 +22,33 @@ let vx;
 let vy;
 let lastvx;
 let lastvy;
-let tc;
-let gs;
 let ax;
 let ay;
 let tail;
 let snakeInstance;
-let score;
-let highScore;
 let paused;
 
-function getSnakeCanvas() {
+function initSnake() {
+  snakeGame = document.getElementById('snake-game');
+  scoreElement = document.getElementById('snake-score');
+  highScoreElement = document.getElementById('snake-high-score');
   canvas = document.getElementById('snake');
   ctx = canvas.getContext('2d');
+
+  canvasSize = canvas.width;
+  tileSize = canvasSize / tiles;
 }
 
-function initSnake() {
+function initSnakeGame() {
   //position
-  px = 10;
-  py = 10;
+  px = startPosition;
+  py = startPosition;
   // velocity
   vx = 0;
   vy = 0;
   // last velocity - helps with rapid multiple key presses
   lastvx = 0;
   lastvy = 0;
-  // tile count and tile size
-  tc = 20;
-  gs = 20;
-  // apple
-  ax = 15;
-  ay = 15;
   // snake length
   tail = initialLength;
   trail = [];
@@ -49,14 +56,16 @@ function initSnake() {
   snakeInstance = null;
   // score
   score = 0;
-  highScore = 0;
   paused = false;
+  snakeGame.style.visibility = 'visible';
   document.addEventListener("keydown", keyPush);
+  spawnApple();
 }
 
 function unInitSnake() {
   document.removeEventListener("keydown", keyPush);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  snakeGame.style.visibility = 'hidden';
 }
 
 // Handles pressing a pause button (resetAction false) or a close/new button (resetAction true)
@@ -75,80 +84,130 @@ function snakeTrigger(resetAction = false) {
     // Start/resume
     paused = false;
     if (resetAction) {
-      initSnake();
+      initSnakeGame();
     }
-    snakeInstance = setInterval(game, 1000/speed);
+    snakeInstance = setInterval(game, 1000 / speed);
   }
 }
 
 function game() {
+  updateSnakeState();
+  checkAteApple();
+  trackTailLength();
+
+  drawBackground();
+  drawApple();
+  drawSnake();
+
+  updateScores();
+}
+
+function updateSnakeState() {
   px += vx;
   py += vy;
   lastvx = vx;
   lastvy = vy;
 
   if (px < 0) {
-    px = tc -1
+    px = tiles - 1
   }
 
-  if (px > tc - 1) {
+  if (px > tiles - 1) {
     px = 0;
   }
 
   if (py < 0) {
-    py = tc -1;
+    py = tiles - 1;
   }
 
-  if (py > tc - 1) {
+  if (py > tiles - 1) {
     py = 0;
   }
+}
 
-  ctx.fillStyle='black';
+function drawBackground() {
+  ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
 
-  ctx.fillStyle='red';
-  ctx.fillRect(ax * gs, ay * gs, gs - 2, gs - 2 );
+function drawApple() {
+  drawTile(ax, ay, 'red');
+}
 
-  ctx.fillStyle='lime';
+function drawSnake() {
   for (let i = 0; i < trail.length; i++) {
-    ctx.fillRect(trail[i].x * gs, trail[i].y * gs, gs - 2, gs - 2 );
-    if (trail[i].x === px && trail[i].y === py) {
-      tail = initialLength;
-    }
-  }
+    let color = 'lime';
 
-  if (ax === px && ay === py) {
-    tail++;
-    let needNewApple = true;
-    while (needNewApple) {
-      newApple();
-      needNewApple = false;
-      for (let i = 0; i < trail.length; i++) {
-        if (ax === px && ay === py) {
-          needNewApple = true;
-          break;
-        }
-      }
+    if (i === trail.length - 1) {
+      color = 'green';
+    } else if (trail[i].x === px && trail[i].y === py) {
+      tailDeath();
     }
-  }
 
+    drawTile(trail[i].x, trail[i].y, color);
+  }
+}
+
+function drawTile(x, y, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x * tileSize + 1, y * tileSize + 1, tileSize - 2, tileSize - 2);
+}
+
+function trackTailLength() {
   trail.push({x: px, y: py});
+
   while (trail.length > tail) {
     trail.shift();
   }
 }
 
-function newApple() {
-  ax = Math.floor(Math.random()*tc);
-  ay = Math.floor(Math.random()*tc);
+function updateScores() {
+  scoreElement.innerHTML = score;
+  if (score > highScore) {
+    highScore = score;
+    highScoreElement.innerHTML = highScore;
+  }
+}
+
+function tailDeath() {
+  tail = initialLength;
+  score = 0;
+}
+
+function checkAteApple() {
+  if (ax === px && ay === py) {
+    score += speed;
+    tail++;
+    spawnApple();
+  }
+}
+
+function spawnApple() {
+  let needNewApple = true;
+
+  while (needNewApple) {
+    needNewApple = false;
+
+    ax = Math.floor(Math.random() * tiles);
+    ay = Math.floor(Math.random() * tiles);
+
+    for (let i = 0; i < trail.length; i++) {
+      if (ax === trail[i].x && trail[i].y === py) {
+        needNewApple = true;
+        break;
+      }
+    }
+  }
 }
 
 function keyPush(evt) {
   switch (evt.keyCode) {
     case 32:
+      // space
       snakeTrigger();
       break;
     case 37:
+      // left
       if (lastvx === 1) {
         return;
       }
@@ -156,6 +215,7 @@ function keyPush(evt) {
       vy = 0;
       break;
     case 38:
+      // up
       if (lastvy === 1) {
         return;
       }
@@ -163,6 +223,7 @@ function keyPush(evt) {
       vy = -1;
       break;
     case 39:
+      // right
       if (lastvx === -1) {
         return;
       }
@@ -170,6 +231,7 @@ function keyPush(evt) {
       vy = 0;
       break;
     case 40:
+      // down
       if (lastvy === -1) {
         return;
       }
@@ -177,6 +239,7 @@ function keyPush(evt) {
       vy = 1;
       break;
     case 81:
+      // q
       snakeTrigger(true);
       break;
   }
