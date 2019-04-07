@@ -1,4 +1,4 @@
-package com.andrewflbarnes.penny.component.landing;
+package com.andrewflbarnes.penny.pages.landing;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Controller
-public class LandingController {
+public class LandingPage {
 
     private static final String PENNY_IS = "Penny is ";
 

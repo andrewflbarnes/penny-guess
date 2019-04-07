@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(
         produces = MediaType.APPLICATION_JSON_VALUE,
-        path = "scores/high"
+        path = "api/scores/high"
 )
 @AllArgsConstructor
 public class ScoringController {
