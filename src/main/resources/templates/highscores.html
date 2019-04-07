@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body})}">
+
+<body>
+<div class="jumbotron text-center">
+  <div class="container">
+    <h1>High Scores</h1>
+    <table class="table">
+      <tr th:each="score: ${scores}">
+        <td th:text="${score.name}">"</td>
+        <td th:text="${score.score}">"</td>
+      </tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>
