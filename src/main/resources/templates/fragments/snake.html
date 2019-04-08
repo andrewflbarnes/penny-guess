@@ -1,25 +1,22 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="snake">
 <body>
-  <div id="snake-board">
+  <div id="snake-board" style="display: none">
     <canvas id="snake-canvas" height="400" width="400" onclick="rotateColorScheme()"></canvas>
     <h2>Score: <span class="snake-score"></span></h2>
     <h2>High Score: <span class="snake-high-score"></span></h2>
     <h3><a href="/highscores">All Time High Scores</a></h3>
   </div>
 
-  <div class="snake-submit-score">
+  <div class="snake-submit-score" style="display: none">
+    <h3>You died and scored <span class="snake-high-score">0</span> points!</h3>
     <form>
       <div class="form-group row">
         <label for="snake-submit-score-name">Name</label>
         <input id="snake-submit-score-name" name="name" type="text" placeholder="Name"/>
       </div>
       <div class="form-group row">
-        <label for="snake-submit-score-score">Score</label>
-        <input id="snake-submit-score-score" name="score" type="text" readonly class="form-control-plaintext snake-high-score-value" />
-      </div>
-      <div class="form-group row">
-        <button type="submit" class="btn btn-primary" onclick="event.preventDefault(); submitHighScore()">Submit</button>
+        <button type="submit" class="btn btn-primary" onclick="event.preventDefault(); submitHighScore()">Submit score</button>
       </div>
     </form>
   </div>
