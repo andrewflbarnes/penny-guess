@@ -5,7 +5,6 @@ function DocumentSnakeRenderer(tileCount) {
   this.canvasSize = this.canvas.height;
   this.elBoard = KITTEH('snake-board');
   this.elHighScore = KITTEH('snake-high-score');
-  this.elHighScoreValue = KITTEH('snake-high-score-value');
   this.elScore = KITTEH('snake-score');
   this.elSubmitScore = KITTEH('snake-submit-score');
 }
@@ -36,7 +35,6 @@ DocumentSnakeRenderer.prototype.updateHighScore = function(score) {
   const self = this;
 
   self.elHighScore.setContent(score);
-  self.elHighScoreValue.setValue(score);
 };
 
 DocumentSnakeRenderer.prototype.updateScore = function(score) {
