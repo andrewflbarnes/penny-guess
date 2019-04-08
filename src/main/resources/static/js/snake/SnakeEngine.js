@@ -14,7 +14,7 @@ function SnakeEngine(tiles, renderer, options) {
   this.speed = options.speed || 15;
   this.px = startPosition;
   this.py = startPosition;
-  this.vx = 0;
+  this.vx = 1;
   this.vy = 0;
   this.ax = 0;
   this.ay = 0;
@@ -42,7 +42,7 @@ SnakeEngine.prototype.resetState = function() {
 
   self.px = startPosition;
   self.py = startPosition;
-  self.vx = 0;
+  self.vx = 1;
   self.vy = 0;
   self.ax = 0;
   self.ay = 0;
@@ -151,6 +151,9 @@ SnakeEngine.prototype.tailDeath = function() {
 
   self.tail = initialLength;
   self.score = 0;
+
+  renderer.showSubmitScore();
+  renderer.hideBoard();
 };
 
 SnakeEngine.prototype.checkAteApple = function() {

@@ -1,11 +1,13 @@
-function DocumentSnakeRenderer(tileCount, idCanvas, idBoard, classScore, classHighScore) {
-  this.canvas = document.getElementById(idCanvas);
+function DocumentSnakeRenderer(tileCount) {
+  this.canvas = document.getElementById('snake-canvas');
   this.tileSize = this.canvas.height / tileCount;
   this.context = this.canvas.getContext('2d');
   this.canvasSize = this.canvas.height;
-  this.elBoard = KITTEH(idBoard);
-  this.elHighScore = KITTEH(classHighScore);
-  this.elScore = KITTEH(classScore);
+  this.elBoard = KITTEH('snake-board');
+  this.elHighScore = KITTEH('snake-high-score');
+  this.elHighScoreValue = KITTEH('snake-high-score-value');
+  this.elScore = KITTEH('snake-score');
+  this.elSubmitScore = KITTEH('snake-submit-score');
 }
 
 DocumentSnakeRenderer.prototype.drawBackground = function(color, borderColor) {
@@ -34,6 +36,7 @@ DocumentSnakeRenderer.prototype.updateHighScore = function(score) {
   const self = this;
 
   self.elHighScore.setContent(score);
+  self.elHighScoreValue.setValue(score);
 };
 
 DocumentSnakeRenderer.prototype.updateScore = function(score) {
@@ -52,6 +55,18 @@ DocumentSnakeRenderer.prototype.showBoard = function() {
   const self = this;
 
   self.elBoard.show();
+};
+
+DocumentSnakeRenderer.prototype.hideSubmitScore = function() {
+  const self = this;
+
+  self.elSubmitScore.hide();
+};
+
+DocumentSnakeRenderer.prototype.showSubmitScore = function() {
+  const self = this;
+
+  self.elSubmitScore.show();
 };
 
 DocumentSnakeRenderer.prototype.clearCanvas = function() {

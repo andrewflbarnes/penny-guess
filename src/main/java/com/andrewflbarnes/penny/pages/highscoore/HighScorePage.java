@@ -16,7 +16,7 @@ public class HighScorePage {
     @RequestMapping("/highscores")
     public String index(Map<String, Object> model) {
 
-        model.put("scores", highScoreService.getHighScores(10));
+        model.put("scores", highScoreService.getHighScores(1000));
         return "highscores";
     }
 }
