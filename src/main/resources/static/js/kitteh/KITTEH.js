@@ -8,22 +8,22 @@ function KittehPaw(elId) {
 KittehPaw.prototype.show = function() {
   const self = this;
 
-  self.visibility('visible');
+  self.visibility('');
 };
 
 KittehPaw.prototype.hide = function() {
   const self = this;
 
-  self.visibility('hidden');
+  self.visibility('none');
 };
 
 KittehPaw.prototype.visibility = function(visibleness) {
   const self = this;
 
   if (self.elId) {
-    self.elId.style.visibility = visibleness;
+    self.elId.style.display = visibleness;
   }
-  [].forEach.call(self.elClass, function(el) {el.style.visibility = visibleness})
+  [].forEach.call(self.elClass, function(el) {el.style.display = visibleness})
 };
 
 KittehPaw.prototype.setContent = function(content) {
@@ -33,6 +33,15 @@ KittehPaw.prototype.setContent = function(content) {
     self.elId.innerHTML = content;
   }
   [].forEach.call(self.elClass, function(el) {el.innerHTML = content})
+};
+
+KittehPaw.prototype.setValue = function(content) {
+  const self = this;
+
+  if (self.elId) {
+    self.elId.value = content;
+  }
+  [].forEach.call(self.elClass, function(el) {el.value = content})
 };
 
 function KITTEH(elId) {
