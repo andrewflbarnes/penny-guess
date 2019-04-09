@@ -2,6 +2,7 @@ import React from 'react';
 import SnakeSubmitHighScore from './SnakeSubmitHighScore';
 import SnakeGame from "./SnakeGame";
 import SnakeEngine from "./SnakeEngine";
+import api from '../api';
 
 const schemeClassic = {bgColor: 'black', snakeHeadColor: 'lime', snakeBodyColor: 'green', appleColor: 'red'};
 const schemeBlend = {bgColor: '#532F8C', snakeHeadColor: 'white', snakeBodyColor: 'grey', appleColor: 'cyan'};
@@ -137,13 +138,13 @@ export default class Snake extends React.Component {
   }
 
   handleSubmit(e) {
-    console.log(`submitted with name ${this.state.name}`);
-    e.preventDefault();
+    api.addHighScore(this.state);
     this.unpause();
     this.setState({
       showSubmit: false,
       showSnake: true,
     });
+    e.preventDefault();
   }
 
   render() {

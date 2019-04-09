@@ -12,7 +12,7 @@ const PATHS = {
 };
 
 module.exports = {
-  entry: './src/main/index.js',
+  entry: './src/main/app.js',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, PATHS.build)

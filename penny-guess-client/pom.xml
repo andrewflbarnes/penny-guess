@@ -13,6 +13,10 @@
 
     <name>penny-guess-client</name>
 
+    <properties>
+        <npm.build.type>build</npm.build.type>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -21,7 +25,6 @@
                 <version>0.0.27</version>
 
                 <executions>
-
                     <execution>
                         <id>install-node-and-npm</id>
                         <goals>
@@ -39,7 +42,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run build</arguments>
+                            <arguments>run ${npm.build.type}</arguments>
                         </configuration>
                     </execution>
 
@@ -47,4 +50,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>production</id>
+            <properties>
+                <npm.build.type>buildprod</npm.build.type>
+            </properties>
+        </profile>
+    </profiles>
 </project>

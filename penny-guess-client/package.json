@@ -1,8 +1,8 @@
 {
   "name": "penny-guess-client",
   "version": "1.0.0",
-  "description": "",
-  "main": "src/main/index.js",
+  "description": "A website for trying things out and annoying Penny",
+  "main": "src/main/app.js",
   "private": true,
   "keywords": [],
   "author": "Andrew Barnes",
@@ -12,16 +12,21 @@
     "test:watch": "mocha --compilers js:babel-core/register --require ./src/test/test_helper.js 'src/test/**/*.@(js)' --recursive --watch",
     "start": "webpack-dev-server --inline --hot --port 5006",
     "prebuild": "rm -rf ./target/* &&  npm install --no-optional",
-    "build": "webpack --mode development"
+    "build": "webpack --mode development",
+    "prebuildprod": "rm -rf ./target/* &&  npm install --no-optional",
+    "buildprod": "webpack --mode production"
   },
   "dependencies": {
+    "@babel/runtime": "^7.4.3",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "react-router-dom": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
+    "@babel/plugin-transform-runtime": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
