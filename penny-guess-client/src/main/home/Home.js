@@ -1,7 +1,9 @@
 import React from 'react';
-import Snake from '../snake';
 import {Link} from "react-router-dom";
+import HomeMessage from './HomeMessage';
+import Snake from '../snake';
 import Routes from "../routes";
+import api from '../api';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -10,9 +12,29 @@ export default class Home extends React.Component {
     this.state = {
       highScores: [],
       showSnake: false,
+      message: '',
     };
 
     this.handleClick = this.handleClick.bind(this);
+  }
+
+  componentDidMount() {
+    api.getWhatIs().then(response => {
+      if (response.length && this.state.message === '') {
+        const index = Math.floor(Math.random() * response.length);
+        this.setState({
+          message: `Penny is ${response[index]}`,
+        });
+      }
+    });
+
+    setTimeout(() => {
+      if (this.state.message === '') {
+        this.setState({
+          message: 'Penny is a squidger',
+        });
+      }
+    }, 1500);
   }
 
   handleClick() {
@@ -24,7 +46,7 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <h1 onClick={this.handleClick}>Message for Penny</h1>
+        <HomeMessage onClick={this.handleClick} message={this.state.message}/>
         {this.state.showSnake && (
           <div>
             <Snake />

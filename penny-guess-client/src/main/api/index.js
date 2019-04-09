@@ -1,5 +1,6 @@
 const ENDPOINTS = {
   HIGH_SCORES: './api/scores/high',
+  WHAT_IS: './api/whatis',
 };
 
 export default {
@@ -21,6 +22,14 @@ export default {
       headers: {
         'Content-Type': 'application/json'
       }
+    });
+
+    return response.json();
+  },
+
+  async getWhatIs() {
+    const response = await fetch(ENDPOINTS.WHAT_IS, {
+      method: 'GET',
     });
 
     return response.json();
