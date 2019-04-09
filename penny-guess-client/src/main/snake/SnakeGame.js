@@ -5,11 +5,7 @@ const CANVAS_ID = 'snake-canvas';
 const CANVAS_SIZE = 400;
 const TILE_SIZE = 20;
 
-export class SnakeGame extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
+export default class SnakeGame extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     this.drawBackground();
     this.drawApple();
@@ -69,7 +65,6 @@ export class SnakeGame extends React.Component {
         <canvas id={'snake-canvas'} height={CANVAS_SIZE} width={CANVAS_SIZE} onClick={this.props.rotateColorScheme} />
         <h2>Score: {this.props.score}</h2>
         <h2>High Score: {this.props.highScore}</h2>
-        {/*<h3><a href="/highscores">All Time High Scores</a></h3>*/}
       </div>
     );
   }

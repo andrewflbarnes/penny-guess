@@ -1,7 +1,7 @@
 const startPosition = 10;
 const initialLength = 5;
 
-export class SnakeEngine {
+export default class SnakeEngine {
 
   constructor(tiles, options) {
     options = options || {};
@@ -103,10 +103,10 @@ export class SnakeEngine {
   }
 
   updateVelocities({ vx, vy }) {
-    if ((this.vx === 1 && vx === -1) ||
-      (this.vx === -1 && vx === 1) ||
-      (this.vy === 1 && vy === -1) ||
-      (this.vy === -1 && vy === 1)) {
+    if ((this.lastvx === 1 && vx === -1) ||
+      (this.lastvx === -1 && vx === 1) ||
+      (this.lastvy === 1 && vy === -1) ||
+      (this.lastvy === -1 && vy === 1)) {
       return;
     }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export const SnakeSubmitHighScore = (props) => {
+const SnakeSubmitHighScore = (props) => {
   return (
     <div className="snake-submit-score">
       <h3>You died and scored {props.score} points!</h3>
@@ -23,3 +23,5 @@ SnakeSubmitHighScore.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
+
+export default SnakeSubmitHighScore;

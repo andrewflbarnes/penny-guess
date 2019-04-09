@@ -11,7 +11,7 @@
     "test": "mocha --compilers js:babel-core/register --require ./src/test/test_helper.js 'src/test/**/*.@(js)' --recursive",
     "test:watch": "mocha --compilers js:babel-core/register --require ./src/test/test_helper.js 'src/test/**/*.@(js)' --recursive --watch",
     "start": "webpack-dev-server --inline --hot --port 5006",
-    "prebuild": "rm -rf ./dist/* && mkdir -p ./dist/static && npm install --no-optional",
+    "prebuild": "rm -rf ./target/* &&  npm install --no-optional",
     "build": "webpack --mode development"
   },
   "dependencies": {
@@ -25,7 +25,9 @@
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.1",
     "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^0.23.1",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0"
   }

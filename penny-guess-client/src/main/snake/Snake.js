@@ -1,14 +1,14 @@
 import React from 'react';
-import { SnakeSubmitHighScore } from './SnakeSubmitHighScore';
-import {SnakeGame} from "./SnakeGame";
-import {SnakeEngine} from "./SnakeEngine";
+import SnakeSubmitHighScore from './SnakeSubmitHighScore';
+import SnakeGame from "./SnakeGame";
+import SnakeEngine from "./SnakeEngine";
 
 const schemeClassic = {bgColor: 'black', snakeHeadColor: 'lime', snakeBodyColor: 'green', appleColor: 'red'};
 const schemeBlend = {bgColor: '#532F8C', snakeHeadColor: 'white', snakeBodyColor: 'grey', appleColor: 'cyan'};
 const SPEED = 15;
 const TILES = 20;
 
-export class Snake extends React.Component {
+export default class Snake extends React.Component {
   constructor(props) {
     super(props);
 
@@ -127,13 +127,6 @@ export class Snake extends React.Component {
         // down
         snakeEngine.updateVelocities({vx: 0, vy: 1});
         break;
-      case 81:
-        // q
-        this.handlePause();
-        this.setState({
-          showSnake: false,
-        });
-        break;
     }
   }
 
@@ -175,6 +168,7 @@ export class Snake extends React.Component {
             score={this.state.score}
           />
         )}
+        {/*<h3><a href="/highscores" target="_blank">All Time High Scores</a></h3>*/}
       </div>
     )
   }

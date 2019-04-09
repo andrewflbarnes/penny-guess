@@ -1,3 +1,4 @@
+const packageJSON = require('./package.json');
 const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
@@ -6,11 +7,15 @@ const htmlPlugin = new HtmlWebPackPlugin({
   filename: "./index.html"
 });
 
+const PATHS = {
+  build: path.join(__dirname, 'target', 'classes', 'META-INF', 'resources', 'webjars', packageJSON.name, packageJSON.version)
+};
+
 module.exports = {
   entry: './src/main/index.js',
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, 'dist/static')
+    path: path.resolve(__dirname, PATHS.build)
   },
   module: {
     rules: [
@@ -20,7 +25,11 @@ module.exports = {
         use: {
           loader: "babel-loader"
         }
-      }
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
     ]
   },
   plugins: [htmlPlugin]

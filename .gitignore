@@ -28,3 +28,4 @@ hs_err_pid*
 # node
 **/node_modules/
 **/dist/
+**/node/

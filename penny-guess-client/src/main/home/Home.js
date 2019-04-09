@@ -1,7 +1,7 @@
 import React from 'react';
-import { Snake } from './snake/Snake';
+import Snake from '../snake/Snake';
 
-export class Home extends React.Component {
+export default class Home extends React.Component {
   constructor(props) {
     super(props);
 
