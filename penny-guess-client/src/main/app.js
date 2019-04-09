@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Home from './home';
-import './styles/app.css';
+import './static/styles/app.css';
 import HighScores from "./highscores";
 import Routes from './routes';
 
