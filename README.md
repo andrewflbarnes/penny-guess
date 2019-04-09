@@ -13,26 +13,36 @@ $ git clone https://github.com/andrewflbarnes/penny-guess
 $ cd penny-guess
 $ mvn install
 $ heroku local:start
+$ echo DATABASE_URL='jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres' \
+  > .env
+$ echo PORT=5005 \
+  >> .env
 ```
 
-Your app should now be running on [localhost:5000](http://localhost:5000/).
+Your app should now be running on [localhost:5005](http://localhost:5005/).
 
-If you're going to use a database, ensure you have a local `.env` file that reads something like this:
-
+If you want high score saving functionality to work run the below
+```bash
+psql -U postgres -d postgres
 ```
-DATABASE_URL=postgres://localhost:5432/java_database_name
+```postgresql
+CREATE TABLE high_score
+( name VARCHAR(255) PRIMARY KEY NOT NULL
+, score INTEGER NOT NULL
+);
 ```
 
 ## Deploying to Heroku
 
-```sh
-$ heroku create
-$ git push heroku master
-$ heroku open
-```
+Deploys for this project are done manually through the Heroku dashboard for the `master` branch.
 
 ## Documentation
 
 For more information about using Java on Heroku, see these Dev Center articles:
 
 - [Java on Heroku](https://devcenter.heroku.com/categories/java)
+
+## React
+
+Currently migrating front end code to react in `penny-guess-client`
+using `node v10.15.0 (npm v6.4.1)`.

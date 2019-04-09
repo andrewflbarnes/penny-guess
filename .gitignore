@@ -24,3 +24,8 @@ hs_err_pid*
 
 # heroku
 .env
+
+# node
+**/node_modules/
+**/dist/
+**/node/
