@@ -1,9 +1,9 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import HomeMessage from './HomeMessage';
-import Snake from '../snake';
-import Routes from "../routes";
-import api from '../api';
+import Snake from '../Snake';
+import ROUTES from "../../routes";
+import api from '../../api/';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -50,7 +50,7 @@ export default class Home extends React.Component {
         {this.state.showSnake && (
           <div>
             <Snake />
-            <Link to={Routes.HIGH_SCORES}>High Scores</Link>
+            <Link to={ROUTES.highScores}>High Scores</Link>
           </div>
         )}
       </div>
