@@ -27,10 +27,17 @@ public class ScoringController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public Map<String, String> addHighScore(@RequestBody HighScore highScore) {
-        String response = "OK";
+        String response;
 
-        if (!highScoreService.addHighScore(highScore)) {
-            response = String.format("Unable to add high score for user %s: %d", highScore.getName(), highScore.getScore());
+        HighScore sanitised = HighScore.builder()
+                .name(highScore.getName().trim())
+                .score(highScore.getScore())
+                .build();
+
+        if (!highScoreService.addHighScore(sanitised)) {
+            response = String.format("Unable to add high score: %s", sanitised);
+        } else {
+            response = String.format("Added high score: %s", sanitised);
         }
 
         return Collections.singletonMap("response", response);
@@ -39,9 +46,9 @@ public class ScoringController {
     @GetMapping
     public Object getHighScores(
             @RequestParam(name = "name", required = false) String name,
-            @RequestParam(name = "count", required = false, defaultValue = "5") int count) {
+            @RequestParam(name = "count", required = false, defaultValue = "1000") int count) {
         if (name != null && !name.isEmpty()) {
-            return highScoreService.getUserHighScore(name);
+            return highScoreService.getUserHighScore(name.trim());
         } else {
             return highScoreService.getHighScores(count);
         }

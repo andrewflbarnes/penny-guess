@@ -1,4 +1,1 @@
-export default {
-  HIGH_SCORES: '/highscores',
-  HOME: '/',
-}
+export {default} from './routes';

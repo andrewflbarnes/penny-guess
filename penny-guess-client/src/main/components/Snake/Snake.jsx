@@ -1,13 +1,20 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import SnakeSubmitHighScore from './SnakeSubmitHighScore';
 import SnakeGame from "./SnakeGame";
 import SnakeEngine from "./SnakeEngine";
-import api from '../api';
+import api from '../../api';
+import SCHEMES from './schemes';
 
-const schemeClassic = {bgColor: 'black', snakeHeadColor: 'lime', snakeBodyColor: 'green', appleColor: 'red'};
-const schemeBlend = {bgColor: '#532F8C', snakeHeadColor: 'white', snakeBodyColor: 'grey', appleColor: 'cyan'};
-const SPEED = 15;
-const TILES = 20;
+const propTypes = {
+  speed: PropTypes.number,
+  tiles: PropTypes.number,
+};
+
+const defaultProps = {
+  speed: 15,
+  tiles: 20,
+};
 
 export default class Snake extends React.Component {
   constructor(props) {
@@ -19,14 +26,14 @@ export default class Snake extends React.Component {
     this.rotateColorScheme = this.rotateColorScheme.bind(this);
     this.keyPush = this.keyPush.bind(this);
 
-    const snakeEngine = new SnakeEngine(TILES, SPEED);
+    const snakeEngine = new SnakeEngine(props.tiles, props.speed);
 
     this.state = {
       tick: 0,
       score: 0,
       highScore: 0,
       name: '',
-      colorScheme: schemeClassic,
+      colorScheme: SCHEMES.classic,
       snakeEngine: snakeEngine,
       interval: this.startGameTick(snakeEngine),
       showSnake: true,
@@ -49,7 +56,7 @@ export default class Snake extends React.Component {
         score: this.state.snakeEngine.score,
         highScore: this.state.snakeEngine.highScore,
       })
-    }, 1000 / SPEED);
+    }, 1000 / this.props.speed);
   }
 
   stopGameTick() {
@@ -93,10 +100,10 @@ export default class Snake extends React.Component {
 
   rotateColorScheme() {
     let newScheme;
-    if (this.state.colorScheme === schemeClassic) {
-      newScheme = schemeBlend;
+    if (this.state.colorScheme === SCHEMES.classic) {
+      newScheme = SCHEMES.blend;
     } else {
-      newScheme = schemeClassic;
+      newScheme = SCHEMES.classic;
     }
 
     this.setState({
@@ -105,6 +112,10 @@ export default class Snake extends React.Component {
   }
 
   keyPush(evt) {
+    if (!this.state.showSnake) {
+      return;
+    }
+
     const snakeEngine = this.state.snakeEngine;
 
     switch (evt.keyCode) {
@@ -169,8 +180,10 @@ export default class Snake extends React.Component {
             score={this.state.score}
           />
         )}
-        {/*<h3><a href="/highscores" target="_blank">All Time High Scores</a></h3>*/}
       </div>
     )
   }
 }
+
+Snake.propTypes = propTypes;
+Snake.defaultProps = defaultProps;

@@ -1,5 +1,5 @@
 import React from 'react';
-import api from '../api';
+import api from '../../api/';
 import HighScoreTable from './HighScoreTable';
 
 export default class HighScores extends React.Component {

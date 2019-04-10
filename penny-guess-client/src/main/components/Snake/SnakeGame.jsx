@@ -5,8 +5,19 @@ const CANVAS_ID = 'snake-canvas';
 const CANVAS_SIZE = 400;
 const TILE_SIZE = 20;
 
+const propTypes = {
+  rotateColorScheme: PropTypes.func.isRequired,
+  onDeath: PropTypes.func.isRequired,
+  score: PropTypes.number.isRequired,
+  highScore: PropTypes.number.isRequired,
+  colorScheme: PropTypes.object.isRequired,
+  trail: PropTypes.array.isRequired,
+  ax: PropTypes.number.isRequired,
+  ay: PropTypes.number.isRequired,
+};
+
 export default class SnakeGame extends React.Component {
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate() {
     this.drawBackground();
     this.drawApple();
     this.drawSnake();
@@ -61,8 +72,8 @@ export default class SnakeGame extends React.Component {
 
   render() {
     return (
-      <div id="snake-board">
-        <canvas id={'snake-canvas'} height={CANVAS_SIZE} width={CANVAS_SIZE} onClick={this.props.rotateColorScheme} />
+      <div>
+        <canvas id={CANVAS_ID} height={CANVAS_SIZE} width={CANVAS_SIZE} onClick={this.props.rotateColorScheme} />
         <h2>Score: {this.props.score}</h2>
         <h2>High Score: {this.props.highScore}</h2>
       </div>
@@ -70,13 +81,4 @@ export default class SnakeGame extends React.Component {
   }
 }
 
-SnakeGame.propTypes = {
-  rotateColorScheme: PropTypes.func.isRequired,
-  onDeath: PropTypes.func.isRequired,
-  score: PropTypes.number.isRequired,
-  highScore: PropTypes.number.isRequired,
-  colorScheme: PropTypes.object.isRequired,
-  trail: PropTypes.array.isRequired,
-  ax: PropTypes.number.isRequired,
-  ay: PropTypes.number.isRequired,
-};
+SnakeGame.propTypes = propTypes;

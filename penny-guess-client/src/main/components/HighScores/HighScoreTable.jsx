@@ -1,12 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const HighScoreTable = (props) => {
+const propTypes = {
+  highScores: PropTypes.array.isRequired,
+};
+
+export default function HighScoreTable({highScores}) {
   return (
     <table className="table">
       <tbody>
-      {props.highScores.map((hs, i) => (
-        <tr key={`high_score_${i}`}>
+      {highScores.map(hs => (
+        <tr key={hs.name}>
           <td>{hs.name}</td>
           <td>{hs.score}</td>
         </tr>
@@ -14,10 +18,6 @@ const HighScoreTable = (props) => {
       </tbody>
     </table>
   )
-};
+}
 
-HighScoreTable.propTypes = {
-  highScores: PropTypes.array.isRequired,
-};
-
-export default HighScoreTable;
+HighScoreTable.propTypes = propTypes;
