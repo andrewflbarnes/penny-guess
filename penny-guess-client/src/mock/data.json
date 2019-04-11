@@ -1,0 +1,18 @@
+{
+  "api-whatis": [
+    "a squidger",
+    "a spiderwench"
+  ],
+  "api-scores-high": [
+    {
+      "id": 0,
+      "name": "Barnes",
+      "score": 3000
+    },
+    {
+      "id": 1,
+      "name": "Penny",
+      "score": 2999
+    }
+  ]
+}

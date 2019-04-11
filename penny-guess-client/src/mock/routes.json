@@ -1,0 +1,6 @@
+{
+  "/api/whatis": "/api-whatis",
+  "/api/whatis/:id": "/api-whatis/:id",
+  "/api/scores/high": "/api-scores-high",
+  "/api/scores/high/:id": "/api-scores-high/:id"
+}

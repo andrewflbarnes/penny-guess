@@ -35,5 +35,17 @@ module.exports = {
   plugins: [htmlPlugin],
   resolve: {
     extensions: ['.js', '.jsx']
-  }
+  },
+  devServer: {
+    port: 5006,
+    stats: {
+      colors: true
+    },
+    proxy: {
+      '/api/*': {
+        target: 'http://localhost:5007',
+        secure: false
+      },
+    },
+  },
 };
