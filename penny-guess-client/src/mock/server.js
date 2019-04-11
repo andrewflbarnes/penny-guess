@@ -16,6 +16,16 @@ const middlewares = jsonServer.defaults();
 const rewriter = jsonServer.rewriter(routes);
 const router = jsonServer.router(db);
 
+const middlewareNotEmpty = function(method, field, responseCode) {
+  return (req, res, next) => {
+    if (req.method === method && typeof req.body[field] !== "undefined" && req.body[field] === '') {
+      res.sendStatus(responseCode);
+    } else {
+      next();
+    }
+  }
+};
+
 console.log(chalk.yellow('  Starting in-memory mock API json-server'));
 console.log(chalk.grey('  To run normally using lowdb use the below command'));
 console.log(chalk.grey(`  json-server --routes routes.json --port ${port} data.json`));
@@ -37,6 +47,12 @@ for (const key in routes) {
 }
 
 server.use(middlewares);
+server.use(jsonServer.bodyParser);
+server.use((req, res, next) => {
+  console.log(chalk.grey(JSON.stringify(req.body)));
+  next()
+});
+server.use(middlewareNotEmpty('POST', 'name', 422));
 server.use(rewriter);
 server.use(router);
 
