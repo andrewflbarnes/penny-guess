@@ -149,13 +149,14 @@ export default class Snake extends React.Component {
   }
 
   handleSubmit(e) {
-    api.addHighScore(this.state);
-    this.unpause();
-    this.setState({
-      showSubmit: false,
-      showSnake: true,
-    });
     e.preventDefault();
+    api.addHighScore(this.state).then(() => {
+      this.unpause();
+      this.setState({
+        showSubmit: false,
+        showSnake: true,
+      });
+    });
   }
 
   render() {
