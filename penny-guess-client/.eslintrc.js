@@ -5,10 +5,10 @@ module.exports = {
     'prettier/react',
   ],
   'rules': {
-    'no-plusplus': [2, {
+    'no-plusplus': ["error", {
       'allowForLoopAfterthoughts': true,
     }],
-    'jsx-a11y/label-has-associated-control': [ 2, {
+    'jsx-a11y/label-has-associated-control': ["error", {
       'assert': 'either',
     }],
   },
@@ -16,4 +16,20 @@ module.exports = {
     'fetch': false,
     'document': false,
   },
+  'overrides': [
+    {
+      "files": ["src/test/**/*.js", "src/test/**/*.jsx"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off",
+        "no-undef": "off",
+      }
+    },
+    {
+      "files": "src/mock/**/*.js",
+      'rules': {
+        'import/no-extraneous-dependencies': "off",
+        'no-console': "off",
+      },
+    },
+  ]
 };
