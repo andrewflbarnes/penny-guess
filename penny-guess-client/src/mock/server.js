@@ -28,7 +28,7 @@ const { argv } = process;
 
 let i = 1;
 
-do (i += 1); while (argv[i - 1] !== '--');
+do (i += 1); while (argv[i - 1] && argv[i - 1] !== '--');
 
 for (; i < argv.length; i++) {
   switch (argv[i]) {
