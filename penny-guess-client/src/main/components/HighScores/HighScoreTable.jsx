@@ -12,12 +12,15 @@ export default function HighScoreTable({highScores}) {
   return (
     <table className="table">
       <tbody>
-      {highScores.map(hs => (
-        <tr key={hs.name}>
-          <td>{hs.name}</td>
-          <td>{hs.score}</td>
-        </tr>
-      ))}
+      {highScores
+        .sort((a, b) => b.score - a.score)
+        .map(hs => (
+          <tr key={hs.name}>
+            <td>{hs.name}</td>
+            <td>{hs.score}</td>
+          </tr>
+        ))
+      }
       </tbody>
     </table>
   )

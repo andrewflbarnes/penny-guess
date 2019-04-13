@@ -10,7 +10,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.jsx .",
     "lint:fix": "eslint --ext .js,.jsx src --fix",
-    "test": "mocha --compilers js:babel-./register --require ./src/test/test_helper.js 'src/test/**/*.@(js)' --recursive",
+    "test": "npm run lint",
     "mock": "cd src/mock && node server.js",
     "start": "webpack-dev-server --inline --hot --config webpack.dev.js",
     "prebuild": "rimraf ./target/classes/META-INF/resources/*",
