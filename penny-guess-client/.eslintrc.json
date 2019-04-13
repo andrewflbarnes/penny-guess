@@ -1,7 +1,0 @@
-{
-  "extends": ["airbnb", "prettier", "prettier/react"],
-  "globals": {
-    "fetch": false,
-    "document": false
-  }
-}

@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const propTypes = {
-  highScores: PropTypes.array.isRequired,
+  highScores: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    score: PropTypes.number.isRequired,
+  })).isRequired,
 };
 
 export default function HighScoreTable({highScores}) {

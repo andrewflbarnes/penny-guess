@@ -1,3 +1,4 @@
+/* eslint react/jsx-filename-extension: 0 */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route, Switch } from "react-router-dom";

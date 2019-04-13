@@ -10,27 +10,43 @@ const propTypes = {
   onDeath: PropTypes.func.isRequired,
   score: PropTypes.number.isRequired,
   highScore: PropTypes.number.isRequired,
-  colorScheme: PropTypes.object.isRequired,
-  trail: PropTypes.array.isRequired,
+  colorScheme: PropTypes.shape({
+    bgColor: PropTypes.string.isRequired,
+    snakeHeadColor: PropTypes.string.isRequired,
+    snakeBodyColor: PropTypes.string.isRequired,
+    appleColor: PropTypes.string.isRequired,
+  }).isRequired,
+  trail: PropTypes.arrayOf(PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  })).isRequired,
   ax: PropTypes.number.isRequired,
   ay: PropTypes.number.isRequired,
 };
 
 export default class SnakeGame extends React.Component {
+
+  static drawTile(x, y, color) {
+    const context = SnakeGame.get2dContext();
+
+    context.fillStyle = color;
+    context.fillRect(x * TILE_SIZE + 1, y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+  }
+
+  static get2dContext() {
+    return document.getElementById(CANVAS_ID).getContext('2d');
+  }
+
   componentDidUpdate() {
     this.drawBackground();
     this.drawApple();
     this.drawSnake();
   }
 
-  drawApple() {
-    SnakeGame.drawTile(this.props.ax, this.props.ay, this.props.colorScheme.appleColor);
-  }
-
   drawSnake() {
-    const length = this.props.trail.length - 1;
-    const trail = this.props.trail;
-    const { snakeBodyColor, snakeHeadColor } = this.props.colorScheme;
+    const { trail, onDeath, colorScheme } = this.props;
+    const { snakeBodyColor, snakeHeadColor } = colorScheme;
+    const length = trail.length - 1;
 
     for (let i = 0; i <= length; i++) {
       let color = snakeBodyColor;
@@ -38,7 +54,7 @@ export default class SnakeGame extends React.Component {
       if (i === length) {
         color = snakeHeadColor;
       } else if (trail[i].x === trail[length].x && trail[i].y === trail[length].y) {
-        this.props.onDeath();
+        onDeath();
       }
 
       SnakeGame.drawTile(trail[i].x, trail[i].y, color);
@@ -46,8 +62,9 @@ export default class SnakeGame extends React.Component {
   }
 
   drawBackground() {
-    const context = SnakeGame.getContext();
-    const { snakeHeadColor, bgColor } = this.props.colorScheme;
+    const context = SnakeGame.get2dContext();
+    const { colorScheme } = this.props;
+    const { snakeHeadColor, bgColor } = colorScheme;
     const borderColor = snakeHeadColor;
 
     context.fillStyle = bgColor;
@@ -59,23 +76,19 @@ export default class SnakeGame extends React.Component {
     }
   }
 
-  static drawTile(x, y, color) {
-    const context = SnakeGame.getContext();
-
-    context.fillStyle = color;
-    context.fillRect(x * TILE_SIZE + 1, y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
-  }
-
-  static getContext() {
-    return document.getElementById(CANVAS_ID).getContext('2d');
+  drawApple() {
+    const { ax, ay, colorScheme } = this.props;
+    SnakeGame.drawTile(ax, ay, colorScheme.appleColor);
   }
 
   render() {
+    const { rotateColorScheme, score, highScore } = this.props;
+
     return (
       <div>
-        <canvas id={CANVAS_ID} height={CANVAS_SIZE} width={CANVAS_SIZE} onClick={this.props.rotateColorScheme} />
-        <h2>Score: {this.props.score}</h2>
-        <h2>High Score: {this.props.highScore}</h2>
+        <canvas id={CANVAS_ID} height={CANVAS_SIZE} width={CANVAS_SIZE} onClick={rotateColorScheme} />
+        <h2>Score: {score}</h2>
+        <h2>High Score: {highScore}</h2>
       </div>
     );
   }

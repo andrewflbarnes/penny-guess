@@ -3,11 +3,10 @@ const initialLength = 5;
 
 export default class SnakeEngine {
 
-  constructor(tiles, options) {
-    options = options || {};
+  constructor(tiles, speed = 25) {
 
     this.tiles = tiles;
-    this.speed = options.speed || 15;
+    this.speed = speed;
     this.highScore = 0;
     this.initSnakeGame();
   }
@@ -79,7 +78,7 @@ export default class SnakeEngine {
       if (this.score > this.highScore) {
         this.highScore = this.score;
       }
-      this.tail++;
+      this.tail += 1;
       this.spawnApple();
     }
   }
