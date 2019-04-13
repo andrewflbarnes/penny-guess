@@ -20,12 +20,6 @@ export default class Snake extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleDeath = this.handleDeath.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.rotateColorScheme = this.rotateColorScheme.bind(this);
-    this.keyPush = this.keyPush.bind(this);
-
     const snakeEngine = new SnakeEngine(props.tiles, props.speed);
 
     this.state = {
@@ -34,11 +28,25 @@ export default class Snake extends React.Component {
       highScore: 0,
       name: '',
       colorScheme: SCHEMES.classic,
-      snakeEngine: snakeEngine,
-      interval: this.startGameTick(snakeEngine),
+      snakeEngine,
+      interval: {},
       showSnake: true,
       showSubmit: false,
     };
+
+    this.handleDeath = this.handleDeath.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.rotateColorScheme = this.rotateColorScheme.bind(this);
+    this.keyPush = this.keyPush.bind(this);
+  }
+
+  componentDidMount() {
+    const { snakeEngine } = this.state;
+
+    this.setState({
+      interval: this.startGameTick(snakeEngine),
+    });
 
     document.addEventListener("keydown", this.keyPush);
   }
@@ -48,23 +56,35 @@ export default class Snake extends React.Component {
     this.stopGameTick();
   }
 
-  startGameTick(snakeEngine = this.state.snakeEngine) {
+  startGameTick(newSnakeEngine) {
+    const { snakeEngine: currentSnakeEngine } = this.state;
+    const { speed } = this.props;
+    const snakeEngine = newSnakeEngine || currentSnakeEngine;
+
     return setInterval(() => {
       snakeEngine.game();
+
+      const { tick } = this.state;
+      const { score, highScore } = snakeEngine;
+
       this.setState({
-        tick: this.state.tick + 1,
-        score: this.state.snakeEngine.score,
-        highScore: this.state.snakeEngine.highScore,
+        tick: tick + 1,
+        score,
+        highScore,
       })
-    }, 1000 / this.props.speed);
+    }, 1000 / speed);
   }
 
   stopGameTick() {
-    clearInterval(this.state.interval);
+    const { interval } = this.state;
+
+    clearInterval(interval);
   }
 
   handlePause() {
-    if (this.state.interval) {
+    const { interval } = this.state;
+
+    if (interval) {
       this.pause();
     } else {
       this.unpause();
@@ -72,8 +92,10 @@ export default class Snake extends React.Component {
   }
 
   pause() {
-    if (this.state.interval) {
-      clearInterval(this.state.interval);
+    const { interval } = this.state;
+
+    if (interval) {
+      clearInterval(interval);
 
       this.setState({
         interval: undefined,
@@ -82,7 +104,9 @@ export default class Snake extends React.Component {
   }
 
   unpause() {
-    if (!this.state.interval) {
+    const { interval } = this.state;
+
+    if (!interval) {
       this.setState({
         interval: this.startGameTick(),
       });
@@ -90,7 +114,9 @@ export default class Snake extends React.Component {
   }
 
   handleDeath() {
-    this.state.snakeEngine.tailDeath();
+    const { snakeEngine } = this.state;
+
+    snakeEngine.tailDeath();
     this.handlePause(true);
     this.setState({
       showSubmit: true,
@@ -100,7 +126,9 @@ export default class Snake extends React.Component {
 
   rotateColorScheme() {
     let newScheme;
-    if (this.state.colorScheme === SCHEMES.classic) {
+    const { colorScheme } = this.state;
+
+    if (colorScheme === SCHEMES.classic) {
       newScheme = SCHEMES.blend;
     } else {
       newScheme = SCHEMES.classic;
@@ -112,11 +140,11 @@ export default class Snake extends React.Component {
   }
 
   keyPush(evt) {
-    if (!this.state.showSnake) {
+    const { showSnake, snakeEngine } = this.state;
+
+    if (!showSnake) {
       return;
     }
-
-    const snakeEngine = this.state.snakeEngine;
 
     switch (evt.keyCode) {
       case 32:
@@ -139,45 +167,54 @@ export default class Snake extends React.Component {
         // down
         snakeEngine.updateVelocities({vx: 0, vy: 1});
         break;
+      default:
+        // do nothing
     }
   }
 
   handleNameChange(e) {
+    const { value } = e.target;
+
     this.setState({
-      name: e.target.value,
+      name: value,
     })
   }
 
   handleSubmit(e) {
-    api.addHighScore(this.state);
-    this.unpause();
-    this.setState({
-      showSubmit: false,
-      showSnake: true,
-    });
     e.preventDefault();
+
+    api.addHighScore(this.state).then(() => {
+      this.unpause();
+      this.setState({
+        showSubmit: false,
+        showSnake: true,
+      });
+    });
   }
 
   render() {
+    const { snakeEngine, showSnake, score, highScore, colorScheme, showSubmit } = this.state;
+    const { trail, ax, ay } = snakeEngine;
+
     return (
       <div>
-        {this.state.showSnake && (
+        {showSnake && (
           <SnakeGame
             rotateColorScheme={this.rotateColorScheme}
-            score={this.state.score}
-            highScore={this.state.highScore}
-            colorScheme={this.state.colorScheme}
-            trail={this.state.snakeEngine.trail}
-            ax={this.state.snakeEngine.ax}
-            ay={this.state.snakeEngine.ay}
+            score={score}
+            highScore={highScore}
+            colorScheme={colorScheme}
+            trail={trail}
+            ax={ax}
+            ay={ay}
             onDeath={this.handleDeath}
           />
         )}
-        {this.state.showSubmit && (
+        {showSubmit && (
           <SnakeSubmitHighScore
             onChange={this.handleNameChange}
             onSubmit={this.handleSubmit}
-            score={this.state.score}
+            score={score}
           />
         )}
       </div>

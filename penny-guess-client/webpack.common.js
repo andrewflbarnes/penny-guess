@@ -1,20 +1,14 @@
 const packageJSON = require('./package.json');
 const path = require('path');
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-
-const htmlPlugin = new HtmlWebPackPlugin({
-  template: "./src/main/index.html",
-  filename: "./index.html"
-});
 
 const PATHS = {
-  build: path.join(__dirname, 'target', 'classes', 'META-INF', 'resources', 'webjars', packageJSON.name, packageJSON.version)
+  build: path.join(__dirname, 'target', 'classes', 'META-INF', 'resources')
 };
 
 module.exports = {
   entry: './src/main/app.js',
   output: {
-    filename: 'main.js',
+    filename: `${packageJSON.name}-${packageJSON.version}.js`,
     path: path.resolve(__dirname, PATHS.build)
   },
   module: {
@@ -32,8 +26,7 @@ module.exports = {
       },
     ]
   },
-  plugins: [htmlPlugin],
   resolve: {
     extensions: ['.js', '.jsx']
-  }
+  },
 };

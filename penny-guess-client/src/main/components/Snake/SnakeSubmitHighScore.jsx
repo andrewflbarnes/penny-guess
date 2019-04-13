@@ -13,8 +13,10 @@ export default function SnakeSubmitHighScore({onSubmit, onChange, score}) {
       <h3>You died and scored {score} points!</h3>
       <form onSubmit={onSubmit}>
         <div className="form-group row">
-          <label htmlFor="snake-submit-high-score">Name</label>
-          <input id="snake-submit-high-score" onChange={onChange} type="text" placeholder="Name"/>
+          <label htmlFor="snake-submit-high-score">
+            Name
+            <input id="snake-submit-high-score" onChange={onChange} type="text" placeholder="Name"/>
+          </label>
         </div>
         <div className="form-group row">
           <input type="submit" className="btn btn-primary" value="Submit score" />

@@ -1,5 +1,5 @@
 import React from 'react';
-import api from '../../api/';
+import api from "../../api";
 import HighScoreTable from './HighScoreTable';
 
 export default class HighScores extends React.Component {
@@ -21,10 +21,12 @@ export default class HighScores extends React.Component {
   }
 
   render() {
+    const { highScores } = this.state;
+
     return (
       <div>
         <h1>High Scores</h1>
-        <HighScoreTable highScores={this.state.highScores}/>
+        <HighScoreTable highScores={highScores}/>
       </div>
     )
   }

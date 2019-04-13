@@ -1,0 +1,24 @@
+GET http://localhost:5006/api/whatis
+Accept: application/json
+Cache-Control: no-cache
+
+###
+
+GET http://localhost:5006/api/scores/high
+Accept: application/json
+Cache-Control: no-cache
+
+###
+
+POST http://localhost:5006/api/scores/high
+Content-Type: application/json
+Accept: application/json
+Cache-Control: no-cache
+
+{
+  "name": "Emma Watson",
+  "score": 1000
+}
+
+###
+
