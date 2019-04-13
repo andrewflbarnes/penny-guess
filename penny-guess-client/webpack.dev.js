@@ -12,6 +12,8 @@ module.exports = merge(common, {
   plugins: [htmlPlugin],
   devServer: {
     port: 5006,
+    hot: true,
+    inline: true,
     stats: {
       colors: true
     },

@@ -2,4 +2,3 @@ target
 node
 node_nodules
 webpack.*js
-src/mock
