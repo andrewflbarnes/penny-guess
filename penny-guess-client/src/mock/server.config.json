@@ -1,6 +1,6 @@
 {
   "fileData": "data.json",
   "fileRoutes": "routes.json",
-  "port": 9000,
+  "port": 5007,
   "host": "localhost"
 }

@@ -89,8 +89,10 @@ server.use(jsonServer.bodyParser);
 
 // logging middleware
 server.use((req, res, next) => {
-  if (req.body) {
-    console.log(chalk.grey(JSON.stringify(req.body)));
+  const body = JSON.stringify(req.body);
+
+  if (body && body !== '{}') {
+    console.log(chalk.grey(body));
   }
 
   next();
