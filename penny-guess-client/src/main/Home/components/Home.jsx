@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import HomeMessage from './HomeMessage';
-import Snake from '../Snake';
+import Snake from '../../Snake';
 import ROUTES from "../../routes";
 import api from "../../api";
 

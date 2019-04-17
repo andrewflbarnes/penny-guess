@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import SnakeSubmitHighScore from './SnakeSubmitHighScore';
 import SnakeGame from "./SnakeGame";
 import SnakeEngine from "./SnakeEngine";
-import api from '../../api';
-import SCHEMES from './schemes';
+import api from '../../api/index';
+import SCHEMES from '../schemes';
 
 const propTypes = {
   speed: PropTypes.number,

@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import {Home, HighScores} from './components';
+import {Home, HighScores} from '.';
 import ROUTES from './routes';
 import './static/styles/app.css';
 
