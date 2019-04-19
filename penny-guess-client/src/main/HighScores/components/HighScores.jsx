@@ -21,10 +21,10 @@ export class RawHighScores extends React.Component {
   }
 
   render() {
-    const { highScores } = this.props;
+    const { highScores, status } = this.props;
 
     return (
-      <HighScoreTable highScores={highScores}/>
+      <HighScoreTable status={status} highScores={highScores}/>
     )
   }
 }
@@ -34,7 +34,8 @@ RawHighScores.propTypes = propTypes;
 const mapStateToProps = state => {
   const { highScores } = state;
   return {
-    highScores: highScores.scores
+    highScores: highScores.scores,
+    status: highScores.status,
   }
 };
 

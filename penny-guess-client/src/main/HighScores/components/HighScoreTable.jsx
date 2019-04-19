@@ -9,7 +9,13 @@ const propTypes = {
   })).isRequired,
 };
 
-export default function HighScoreTable({highScores}) {
+export default function HighScoreTable({highScores, status}) {
+  const message =  status.loading
+      ? 'Retrieving latest scores...'
+      : status.failed
+        ? 'Failed to load latest scores'
+        : '';
+
   return (
     <div>
       <h1>High Scores</h1>
@@ -23,6 +29,7 @@ export default function HighScoreTable({highScores}) {
         }
         </tbody>
       </table>
+      <small>{message}</small>
     </div>
   )
 }
