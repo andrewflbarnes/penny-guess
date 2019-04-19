@@ -1,33 +1,47 @@
 import React from 'react';
-import api from "../../api/index";
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import HighScoreTable from './HighScoreTable';
+import * as actions from '../action_creators';
 
-export default class HighScores extends React.Component {
-  constructor(props) {
-    super(props);
+const propTypes = {
+  highScores: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    score: PropTypes.number.isRequired,
+  })).isRequired,
+  fetchHighScores: PropTypes.func.isRequired
+};
 
-    this.state = {
-      highScores: []
-    }
-  }
+export class RawHighScores extends React.Component {
 
   componentDidMount() {
-    api.getHighScores()
-      .then(highScores => {
-        this.setState({
-          highScores
-        })
-      });
+    const { fetchHighScores } = this.props;
+    fetchHighScores();
   }
 
   render() {
-    const { highScores } = this.state;
+    const { highScores } = this.props;
 
     return (
-      <div>
-        <h1>High Scores</h1>
-        <HighScoreTable highScores={highScores}/>
-      </div>
+      <HighScoreTable highScores={highScores}/>
     )
   }
 }
+
+RawHighScores.propTypes = propTypes;
+
+const mapStateToProps = state => {
+  const { highScores } = state;
+  return {
+    highScores: highScores.scores
+  }
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(actions, dispatch)
+};
+
+const HighScores = connect(mapStateToProps, mapDispatchToProps)(RawHighScores);
+
+export default HighScores;

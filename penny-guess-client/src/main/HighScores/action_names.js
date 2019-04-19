@@ -1,0 +1,3 @@
+export const HIGH_SCORES_UPDATE = 'HIGH_SCORES::HIGH_SCORES_UPDATE';
+
+export { HIGH_SCORES_UPDATE as default }
