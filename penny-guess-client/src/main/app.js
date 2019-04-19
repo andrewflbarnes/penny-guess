@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import {Home, HighScores} from '.';
+import {Home, HighScores, Snake} from '.';
 import ROUTES from './routes';
 import store from './store';
 import './static/styles/app.css';
@@ -15,6 +15,7 @@ const pageRouter = (
         <Switch>
           <Route exact path={ROUTES.home} component={Home}/>
           <Route path={ROUTES.highScores} component={HighScores}/>
+          <Route path={ROUTES.snake} component={Snake}/>
         </Switch>
       </div>
     </Router>

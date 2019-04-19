@@ -5,6 +5,8 @@ import SnakeGame from "./SnakeGame";
 import SnakeEngine from "./SnakeEngine";
 import api from '../../api/index';
 import SCHEMES from '../schemes';
+import {Link} from "react-router-dom";
+import ROUTES from "../../routes/routes";
 
 const propTypes = {
   speed: PropTypes.number,
@@ -217,6 +219,7 @@ export default class Snake extends React.Component {
             score={score}
           />
         )}
+        <Link to={ROUTES.highScores}>High Scores</Link>
       </div>
     )
   }

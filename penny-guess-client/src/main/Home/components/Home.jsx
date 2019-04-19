@@ -1,7 +1,6 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import HomeMessage from './HomeMessage';
-import Snake from '../../Snake';
 import ROUTES from "../../routes";
 import api from "../../api";
 
@@ -10,12 +9,8 @@ export default class Home extends React.Component {
     super(props);
 
     this.state = {
-      showSnake: false,
       message: '',
     };
-
-    this.toggleSnakeVisibility = this.toggleSnakeVisibility.bind(this);
-    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -41,31 +36,13 @@ export default class Home extends React.Component {
     }, 1500);
   }
 
-  handleClick() {
-    this.toggleSnakeVisibility();
-  }
-
-  toggleSnakeVisibility() {
-    const { showSnake } = this.state;
-
-    this.setState({
-      showSnake: !showSnake,
-    });
-  }
-
   render() {
-    const { message, showSnake } = this.state;
+    const { message } = this.state;
 
     return (
-      <div>
-        <HomeMessage onClick={this.handleClick} message={message}/>
-        {showSnake && (
-          <div>
-            <Snake />
-            <Link to={ROUTES.highScores}>High Scores</Link>
-          </div>
-        )}
-      </div>
+      <Link style={{ textDecoration: 'none' }} to={ROUTES.snake}>
+        <HomeMessage message={message}/>
+      </Link>
     );
   }
 }
