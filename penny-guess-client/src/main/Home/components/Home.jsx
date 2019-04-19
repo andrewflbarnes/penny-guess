@@ -1,10 +1,12 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import {Link} from "react-router-dom";
 import HomeMessage from './HomeMessage';
+import * as actions from '../action_creators';
 import ROUTES from "../../routes";
-import api from "../../api";
 
-export default class Home extends React.Component {
+export class RawHome extends React.Component {
   constructor(props) {
     super(props);
 
@@ -14,30 +16,21 @@ export default class Home extends React.Component {
   }
 
   componentDidMount() {
-    api.getWhatIs().then(response => {
-      const { message } = this.state;
+    const { fetchHomeMessage, updateHomeMessage } = this.props;
 
-      if (response.length && message === '') {
-        const index = Math.floor(Math.random() * response.length);
-        this.setState({
-          message: `Penny is ${response[index]}`,
-        });
-      }
-    });
+    fetchHomeMessage();
 
     setTimeout(() => {
-      const { message } = this.state;
+      const { message } = this.props;
 
       if (message === '') {
-        this.setState({
-          message: 'Penny is a squidger',
-        });
+        updateHomeMessage('Penny is a squidger');
       }
     }, 1500);
   }
 
   render() {
-    const { message } = this.state;
+    const { message } = this.props;
 
     return (
       <Link style={{ textDecoration: 'none' }} to={ROUTES.snake}>
@@ -46,3 +39,19 @@ export default class Home extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { home } = state;
+
+  return {
+    message: home.message,
+  }
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(actions, dispatch)
+};
+
+const Home = connect(mapStateToProps, mapDispatchToProps)(RawHome);
+
+export default Home;

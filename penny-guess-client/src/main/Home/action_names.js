@@ -1,0 +1,3 @@
+export const HOME_MESSAGE_UPDATE = 'HOME::HOME_MESSAGE_UPDATE';
+
+export { HOME_MESSAGE_UPDATE as default };
