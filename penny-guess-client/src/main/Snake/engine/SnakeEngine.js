@@ -60,7 +60,7 @@ export default class SnakeEngine {
   }
 
   updateSnakeState() {
-    //update position
+    // update position
     this.px += this.vx;
     this.py += this.vy;
     this.lastvx = this.vx;

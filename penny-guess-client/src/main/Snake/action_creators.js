@@ -65,6 +65,21 @@ export function deathSnake() {
   }
 }
 
+export function displaySubmit(display, score = 0) {
+  return {
+    type: SNAKE_SUBMIT_DISPLAY,
+    display,
+    score,
+  }
+}
+
+export function updateSubmitName(name) {
+  return {
+    type: SNAKE_SUBMIT_NAME_UPDATE,
+    name,
+  }
+}
+
 export function tickSnakeAndHandleDeath() {
   return (dispatch, getState) => {
     dispatch(tickSnake());
@@ -94,21 +109,6 @@ export function unpauseSnake() {
     }, 1000 / speed);
 
     dispatch(setSnakeInterval(newInterval));
-  }
-}
-
-export function displaySubmit(display, score = 0) {
-  return {
-    type: SNAKE_SUBMIT_DISPLAY,
-    display,
-    score,
-  }
-}
-
-export function updateSubmitName(name) {
-  return {
-    type: SNAKE_SUBMIT_NAME_UPDATE,
-    name,
   }
 }
 

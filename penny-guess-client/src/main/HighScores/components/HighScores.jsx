@@ -10,6 +10,10 @@ const propTypes = {
     name: PropTypes.string.isRequired,
     score: PropTypes.number.isRequired,
   })).isRequired,
+  status: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    failed: PropTypes.bool.isRequired,
+  }).isRequired,
   fetchHighScores: PropTypes.func.isRequired
 };
 

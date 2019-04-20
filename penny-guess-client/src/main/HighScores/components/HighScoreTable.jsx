@@ -7,14 +7,20 @@ const propTypes = {
     name: PropTypes.string.isRequired,
     score: PropTypes.number.isRequired,
   })).isRequired,
+  status: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    failed: PropTypes.bool.isRequired,
+  }).isRequired,
 };
 
 export default function HighScoreTable({highScores, status}) {
-  const message =  status.loading
-      ? 'Retrieving latest scores...'
-      : status.failed
-        ? 'Failed to load latest scores'
-        : '';
+  let message = '';
+
+  if (status.loading) {
+    message = 'Retrieving latest scores...';
+  } else if (status.failed) {
+    message = 'Failed to load latest scores'
+  }
 
   return (
     <div>

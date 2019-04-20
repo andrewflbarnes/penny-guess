@@ -81,11 +81,10 @@ function game(state = initialStateGame, action) {
     case SNAKE_GAME_TICK:
       snakeEngine.syncState(snakeState);
       snakeEngine.game();
-      const nextTick = tick + 1;
 
       return {
         ...state,
-        tick: nextTick,
+        tick: tick + 1,
         snakeState: engineAsState(snakeEngine),
       };
     case SNAKE_GAME_PAUSE:

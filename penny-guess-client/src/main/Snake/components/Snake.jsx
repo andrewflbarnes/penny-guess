@@ -2,20 +2,22 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import {Link} from "react-router-dom";
 import SnakeSubmitHighScore from './SnakeSubmitHighScore';
 import SnakeGame from "./SnakeGame";
 import SCHEMES from '../schemes';
-import {Link} from "react-router-dom";
 import ROUTES from "../../routes/routes";
 import * as actions from '../action_creators';
 
 const propTypes = {
+  pauseSnake: PropTypes.func.isRequired,
   unpauseSnake: PropTypes.func.isRequired,
   displaySnake: PropTypes.func.isRequired,
   displaySubmit: PropTypes.func.isRequired,
   updateSnakeColourScheme: PropTypes.func.isRequired,
   updateSnakeVelocity: PropTypes.func.isRequired,
   updateSubmitName: PropTypes.func.isRequired,
+  submitScore: PropTypes.func.isRequired,
   game: PropTypes.shape({
     showSnake: PropTypes.bool.isRequired,
     colorScheme: PropTypes.shape({

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {Link} from "react-router-dom";
@@ -6,14 +7,13 @@ import HomeMessage from './HomeMessage';
 import * as actions from '../action_creators';
 import ROUTES from "../../routes";
 
-export class RawHome extends React.Component {
-  constructor(props) {
-    super(props);
+const propTypes = {
+  fetchHomeMessage: PropTypes.func.isRequired,
+  updateHomeMessage: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
+};
 
-    this.state = {
-      message: '',
-    };
-  }
+export class RawHome extends React.Component {
 
   componentDidMount() {
     const { fetchHomeMessage, updateHomeMessage } = this.props;
@@ -39,6 +39,8 @@ export class RawHome extends React.Component {
     );
   }
 }
+
+RawHome.propTypes = propTypes;
 
 const mapStateToProps = state => {
   const { home } = state;

@@ -1,4 +1,4 @@
-import HOME_MESSAGE_UPDATE from './action_names';
+import {HOME_MESSAGE_UPDATE} from './action_names';
 import api from '../api';
 
 export function updateHomeMessage(message) {
