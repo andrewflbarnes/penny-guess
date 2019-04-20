@@ -3,13 +3,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {Link} from "react-router-dom";
-import SnakeSubmitHighScore from './SnakeSubmitHighScore';
 import SnakeGame from "./SnakeGame";
-import SnakeSpeeder from "./SnakeSpeeder";
+import SnakeSubmitHighScore from './SnakeSubmitHighScore';
 import SnakeScoreDisplay from "./SnakeScoreDisplay";
 import SCHEMES from '../schemes';
 import ROUTES from "../../routes/routes";
 import * as actions from '../action_creators';
+import SnakeOptions from "./SnakeOptions";
 
 const propTypes = {
   pauseSnake: PropTypes.func.isRequired,
@@ -18,7 +18,6 @@ const propTypes = {
   displaySubmit: PropTypes.func.isRequired,
   updateSnakeColourScheme: PropTypes.func.isRequired,
   updateSnakeVelocity: PropTypes.func.isRequired,
-  updateSnakeSpeed: PropTypes.func.isRequired,
   updateSubmitName: PropTypes.func.isRequired,
   submitScore: PropTypes.func.isRequired,
   cancelSubmitScore: PropTypes.func.isRequired,
@@ -56,8 +55,6 @@ export class RawSnake extends React.Component {
     this.handleNameChange = this.handleNameChange.bind(this);
     this.rotateColorScheme = this.rotateColorScheme.bind(this);
     this.keyPush = this.keyPush.bind(this);
-    this.handleSpeedDecrement = this.handleSpeedDecrement.bind(this);
-    this.handleSpeedIncrement = this.handleSpeedIncrement.bind(this);
   }
 
   componentDidMount() {
@@ -156,29 +153,11 @@ export class RawSnake extends React.Component {
 
   }
 
-  handleSpeedIncrement() {
-    const { game, updateSnakeSpeed, pauseSnake, unpauseSnake } = this.props;
-    const { speed } = game.snakeState;
-
-    updateSnakeSpeed(speed + 1);
-    pauseSnake();
-    unpauseSnake();
-  }
-
-  handleSpeedDecrement() {
-    const { game, updateSnakeSpeed, pauseSnake, unpauseSnake } = this.props;
-    const { speed } = game.snakeState;
-
-    updateSnakeSpeed(speed - 1);
-    pauseSnake();
-    unpauseSnake();
-  }
-
   render() {
     const { game, submit } = this.props;
     const { snakeState, showSnake, colorScheme } = game;
     const { showSubmit, score: submitScore } = submit;
-    const { trail, ax, ay, highScore, score, speed } = snakeState;
+    const { trail, ax, ay, highScore, score } = snakeState;
 
     return (
       <div>
@@ -191,7 +170,7 @@ export class RawSnake extends React.Component {
               ax={ax}
               ay={ay}
             />
-            <SnakeSpeeder onIncrement={this.handleSpeedIncrement} speed={speed} onDecrement={this.handleSpeedDecrement} />
+            <SnakeOptions />
             <SnakeScoreDisplay score={score} highScore={highScore}/>
           </div>
         )}
