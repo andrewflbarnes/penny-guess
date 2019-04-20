@@ -11,37 +11,63 @@ import {
   SNAKE_SUBMIT_DISPLAY,
   SNAKE_SUBMIT_NAME_UPDATE,
 } from './action_names';
-import SnakeEngine from "./engine/SnakeEngine";
 import SCHEMES from "./schemes";
 
-/*
-NOTE: Classes are note serialised well in react-redux. In order to correctly track the state
-of the snakeEngine we convert it to a more "pure" object using this method which.
+function spawnApple(trail, tiles) {
+  let needNewApple = true;
+  let ax, ay;
 
-ALL access to the state of the snake engine should be made through the snakeState object.
-The snakeEngine should be used for updating internal state by THIS reducer after which
-it should be converted and stored using this method again.
+  while (needNewApple) {
+    needNewApple = false;
 
-The snakeEngine must NOT be included in the state as this causes replay issues in the redux
-dev tools
- */
-function engineAsState(engine) {
-  return Object.assign({}, {...engine, trail: engine.trail.map(e => e)})
+    ax = Math.floor(Math.random() * tiles);
+    ay = Math.floor(Math.random() * tiles);
+
+    for (let i = 0; i < trail.length; i++) {
+      if (ax === trail[i].x && ay === trail[i].y) {
+        needNewApple = true;
+        break;
+      }
+    }
+  }
+
+  return { ax, ay }
 }
 
-// TODO
-const snakeEngine = new SnakeEngine(20, 15);
+const startPosition = 10;
+const initialLength = 5;
+const startSpeed = 15;
+const initialTiles = 20;
+const { ax, ay } = spawnApple([], initialTiles);
 
 const initialStateGame = {
   tick: 0,
   colorScheme: SCHEMES.classic,
-  snakeState: engineAsState(snakeEngine),
+  snakeState: {
+    tiles: initialTiles,
+    speed: startSpeed,
+    highScore: 0,
+    px: startPosition,
+    py: startPosition,
+    vx: 1,
+    vy: 0,
+    ax,
+    ay,
+    lastvx: 0,
+    lastvy: 0,
+    tail: initialLength,
+    trail: [],
+    score: 0,
+    death: false,
+  },
   interval: undefined,
   showSnake: true,
 };
 
 function game(state = initialStateGame, action) {
   const { interval, tick, snakeState } = state;
+  let { px, py, ax, ay, vx, vy, lastvx, lastvy, trail,
+    tail, score, highScore, tiles, speed, death } = snakeState;
 
   switch (action.type) {
     case SNAKE_GAME_COLOUR_UPDATE:
@@ -55,37 +81,106 @@ function game(state = initialStateGame, action) {
         showSnake: action.display
       };
     case SNAKE_GAME_VELOCITY_UPDATE:
-      snakeEngine.syncState(snakeState);
-      snakeEngine.updateVelocities(action.velocity);
+      const { velocity } = action;
+
+      if ((lastvx === 1 && velocity.vx === -1) ||
+        (lastvx === -1 && velocity.vx === 1) ||
+        (lastvy === 1 && velocity.vy === -1) ||
+        (lastvy === -1 && velocity.vy === 1)) {
+        return state;
+      }
 
       return {
         ...state,
-        snakeState: engineAsState(snakeEngine),
+        snakeState: {
+          ...snakeState,
+          vx: velocity.vx,
+          vy: velocity.vy,
+        },
       };
     case SNAKE_GAME_SPEED_UPDATE:
-      snakeEngine.syncState(snakeState);
-      snakeEngine.setSpeed(action.speed);
+      trail.forEach(t => newTrail.push({x:t.x, y:t.y}));
 
       return {
         ...state,
-        snakeState: engineAsState(snakeEngine),
+        snakeState: {
+          ...snakeState,
+          speed: action.speed,
+        },
       };
     case SNAKE_GAME_DEATH:
-      snakeEngine.syncState(snakeState);
-      snakeEngine.tailDeath();
-
       return {
         ...state,
-        snakeState: engineAsState(snakeEngine),
+        snakeState: {
+          ...snakeState,
+          tail: initialLength,
+          score: 0,
+          trail: [],
+          death: false,
+        },
       };
     case SNAKE_GAME_TICK:
-      snakeEngine.syncState(snakeState);
-      snakeEngine.game();
+      const nextTick = tick + 1;
+      //update position
+      px += vx;
+      py += vy;
+      lastvx = vx;
+      lastvy = vy;
+
+      if (px < 0) {
+        px = tiles - 1
+      }
+
+      if (px > tiles - 1) {
+        px = 0;
+      }
+
+      if (py < 0) {
+        py = tiles - 1;
+      }
+
+      if (py > tiles - 1) {
+        py = 0;
+      }
+
+      trail.push({x: px, y: py});
+
+      // check ate apple
+      if (ax === px && ay === py) {
+        score += speed;
+        if (score > highScore) {
+          highScore = score;
+        }
+        tail += 1;
+        ({ ax: ax, ay: ay } = spawnApple(trail, tiles));
+      }
+
+      // track tail length
+      while (trail.length > tail) {
+        trail.shift();
+      }
+
+      // check cannibal
+      const length = trail.length - 1;
+
+      for (let i = 0; i <= length; i++) {
+        if (i !== length && trail[i].x === trail[length].x && trail[i].y === trail[length].y) {
+          death = true;
+        }
+      }
+
+      const newTrail = [];
+      trail.forEach(t => newTrail.push({x:t.x, y:t.y}));
 
       return {
         ...state,
-        tick: tick + 1,
-        snakeState: engineAsState(snakeEngine),
+        tick: nextTick,
+        snakeState: {
+          ...snakeState,
+          trail: newTrail,
+          px, py, ax, ay, vx, vy, lastvx, lastvy,
+          tail, score, highScore, tiles, speed, death
+        },
       };
     case SNAKE_GAME_PAUSE:
       if (interval) {
