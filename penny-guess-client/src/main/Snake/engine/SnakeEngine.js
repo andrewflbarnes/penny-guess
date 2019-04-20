@@ -42,6 +42,11 @@ export default class SnakeEngine {
   syncState(state) {
     const { px, py, ax, ay, vx, vy, lastvx, lastvy, tail, trail, score, tiles, speed, highScore, death } = state;
 
+    const trailClone = [];
+    trail.forEach(t =>
+      trailClone.push({x:t.x, y:t.y})
+    );
+
     this.tiles = tiles;
     this.speed = speed;
     this.highScore = highScore;
@@ -54,7 +59,7 @@ export default class SnakeEngine {
     this.lastvx = lastvx;
     this.lastvy = lastvy;
     this.tail = tail;
-    this.trail = trail;
+    this.trail = trailClone;
     this.score = score;
     this.death = death;
   }
