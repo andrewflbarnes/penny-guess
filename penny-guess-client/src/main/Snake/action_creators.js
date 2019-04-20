@@ -112,6 +112,14 @@ export function unpauseSnake() {
   }
 }
 
+export function cancelSubmitScore() {
+  return dispatch => {
+    dispatch(displaySubmit(false));
+    dispatch(displaySnake(true));
+    dispatch(unpauseSnake());
+  }
+}
+
 export function submitScore() {
   return (dispatch, getState) => {
     const { name, score } = getState().snake.submit;

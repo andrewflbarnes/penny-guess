@@ -36,12 +36,22 @@ export default class SnakeEngine {
   }
 
   game() {
+    // enforce immutability of previous state
+    const trailClone = [];
+    this.trail.forEach(t =>
+      trailClone.push({x:t.x, y:t.y})
+    );
+
     this.updateSnakeState();
+    this.checkAteApple();
+    this.updateTailLength();
+    this.checkWasCannibal();
   }
 
   syncState(state) {
     const { px, py, ax, ay, vx, vy, lastvx, lastvy, tail, trail, score, tiles, speed, highScore, death } = state;
 
+    // enforce that outside state is not changed
     const trailClone = [];
     trail.forEach(t =>
       trailClone.push({x:t.x, y:t.y})
@@ -88,8 +98,9 @@ export default class SnakeEngine {
     }
 
     this.trail.push({x: this.px, y: this.py});
+  }
 
-    // check ate apple
+  checkAteApple() {
     if (this.ax === this.px && this.ay === this.py) {
       this.score += this.speed;
       if (this.score > this.highScore) {
@@ -98,13 +109,15 @@ export default class SnakeEngine {
       this.tail += 1;
       this.spawnApple();
     }
+  }
 
-    // track tail length
+  updateTailLength() {
     while (this.trail.length > this.tail) {
       this.trail.shift();
     }
+  }
 
-    // check cannibal
+  checkWasCannibal() {
     const { trail } = this;
     const length = trail.length - 1;
 

@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import {Link} from "react-router-dom";
 import SnakeSubmitHighScore from './SnakeSubmitHighScore';
 import SnakeGame from "./SnakeGame";
+import SnakeSpeeder from "./SnakeSpeeder";
+import SnakeScoreDisplay from "./SnakeScoreDisplay";
 import SCHEMES from '../schemes';
 import ROUTES from "../../routes/routes";
 import * as actions from '../action_creators';
@@ -16,8 +18,10 @@ const propTypes = {
   displaySubmit: PropTypes.func.isRequired,
   updateSnakeColourScheme: PropTypes.func.isRequired,
   updateSnakeVelocity: PropTypes.func.isRequired,
+  updateSnakeSpeed: PropTypes.func.isRequired,
   updateSubmitName: PropTypes.func.isRequired,
   submitScore: PropTypes.func.isRequired,
+  cancelSubmitScore: PropTypes.func.isRequired,
   game: PropTypes.shape({
     showSnake: PropTypes.bool.isRequired,
     colorScheme: PropTypes.shape({
@@ -48,9 +52,12 @@ export class RawSnake extends React.Component {
     super(props);
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
     this.rotateColorScheme = this.rotateColorScheme.bind(this);
     this.keyPush = this.keyPush.bind(this);
+    this.handleSpeedDecrement = this.handleSpeedDecrement.bind(this);
+    this.handleSpeedIncrement = this.handleSpeedIncrement.bind(this);
   }
 
   componentDidMount() {
@@ -143,29 +150,56 @@ export class RawSnake extends React.Component {
     submitScore();
   }
 
+  handleCancel() {
+    const { cancelSubmitScore } = this.props;
+    cancelSubmitScore();
+
+  }
+
+  handleSpeedIncrement() {
+    const { game, updateSnakeSpeed, pauseSnake, unpauseSnake } = this.props;
+    const { speed } = game.snakeState;
+
+    updateSnakeSpeed(speed + 1);
+    pauseSnake();
+    unpauseSnake();
+  }
+
+  handleSpeedDecrement() {
+    const { game, updateSnakeSpeed, pauseSnake, unpauseSnake } = this.props;
+    const { speed } = game.snakeState;
+
+    updateSnakeSpeed(speed - 1);
+    pauseSnake();
+    unpauseSnake();
+  }
+
   render() {
     const { game, submit } = this.props;
     const { snakeState, showSnake, colorScheme } = game;
     const { showSubmit, score: submitScore } = submit;
-    const { trail, ax, ay, highScore, score } = snakeState;
+    const { trail, ax, ay, highScore, score, speed } = snakeState;
 
     return (
       <div>
         {showSnake && (
-          <SnakeGame
-            rotateColorScheme={this.rotateColorScheme}
-            score={score}
-            highScore={highScore}
-            colorScheme={colorScheme}
-            trail={trail}
-            ax={ax}
-            ay={ay}
-          />
+          <div>
+            <SnakeGame
+              rotateColorScheme={this.rotateColorScheme}
+              colorScheme={colorScheme}
+              trail={trail}
+              ax={ax}
+              ay={ay}
+            />
+            <SnakeSpeeder onIncrement={this.handleSpeedIncrement} speed={speed} onDecrement={this.handleSpeedDecrement} />
+            <SnakeScoreDisplay score={score} highScore={highScore}/>
+          </div>
         )}
         {showSubmit && (
           <SnakeSubmitHighScore
             onChange={this.handleNameChange}
             onSubmit={this.handleSubmit}
+            onCancel={this.handleCancel}
             score={submitScore}
           />
         )}
