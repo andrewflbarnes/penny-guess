@@ -121,6 +121,10 @@ function game(state = initialStateGame, action) {
       };
     case SNAKE_GAME_TICK:
       const nextTick = tick + 1;
+
+      const newTrail = [];
+      trail.forEach(t => newTrail.push({x:t.x, y:t.y}));
+
       //update position
       px += vx;
       py += vy;
@@ -143,7 +147,7 @@ function game(state = initialStateGame, action) {
         py = 0;
       }
 
-      trail.push({x: px, y: py});
+      newTrail.push({x: px, y: py});
 
       // check ate apple
       if (ax === px && ay === py) {
@@ -152,25 +156,22 @@ function game(state = initialStateGame, action) {
           highScore = score;
         }
         tail += 1;
-        ({ ax: ax, ay: ay } = spawnApple(trail, tiles));
+        ({ ax: ax, ay: ay } = spawnApple(newTrail, tiles));
       }
 
       // track tail length
-      while (trail.length > tail) {
-        trail.shift();
+      while (newTrail.length > tail) {
+        newTrail.shift();
       }
 
       // check cannibal
-      const length = trail.length - 1;
+      const length = newTrail.length - 1;
 
       for (let i = 0; i <= length; i++) {
-        if (i !== length && trail[i].x === trail[length].x && trail[i].y === trail[length].y) {
+        if (i !== length && newTrail[i].x === newTrail[length].x && newTrail[i].y === newTrail[length].y) {
           death = true;
         }
       }
-
-      const newTrail = [];
-      trail.forEach(t => newTrail.push({x:t.x, y:t.y}));
 
       return {
         ...state,
