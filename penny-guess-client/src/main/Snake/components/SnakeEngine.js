@@ -23,6 +23,11 @@ export default class SnakeEngine {
     this.tail = initialLength;
     this.trail = [];
     this.score = 0;
+    this.death = false;
+  }
+
+  setSpeed(speed) {
+    this.speed = speed;
   }
 
   initSnakeGame() {
@@ -32,11 +37,30 @@ export default class SnakeEngine {
 
   game() {
     this.updateSnakeState();
-    this.checkAteApple();
-    this.trackTailLength();
+  }
+
+  syncState(state) {
+    const { px, py, ax, ay, vx, vy, lastvx, lastvy, tail, trail, score, tiles, speed, highScore, death } = state;
+
+    this.tiles = tiles;
+    this.speed = speed;
+    this.highScore = highScore;
+    this.px = px;
+    this.py = py;
+    this.vx = vx;
+    this.vy = vy;
+    this.ax = ax;
+    this.ay = ay;
+    this.lastvx = lastvx;
+    this.lastvy = lastvy;
+    this.tail = tail;
+    this.trail = trail;
+    this.score = score;
+    this.death = death;
   }
 
   updateSnakeState() {
+    //update position
     this.px += this.vx;
     this.py += this.vy;
     this.lastvx = this.vx;
@@ -59,20 +83,8 @@ export default class SnakeEngine {
     }
 
     this.trail.push({x: this.px, y: this.py});
-  }
 
-  trackTailLength() {
-    while (this.trail.length > this.tail) {
-      this.trail.shift();
-    }
-  }
-
-  tailDeath() {
-    this.tail = initialLength;
-    this.score = 0;
-  }
-
-  checkAteApple() {
+    // check ate apple
     if (this.ax === this.px && this.ay === this.py) {
       this.score += this.speed;
       if (this.score > this.highScore) {
@@ -81,6 +93,29 @@ export default class SnakeEngine {
       this.tail += 1;
       this.spawnApple();
     }
+
+    // track tail length
+    while (this.trail.length > this.tail) {
+      this.trail.shift();
+    }
+
+    // check cannibal
+    const { trail } = this;
+    const length = trail.length - 1;
+
+    for (let i = 0; i <= length; i++) {
+      if (i !== length && trail[i].x === trail[length].x && trail[i].y === trail[length].y) {
+        this.death = true;
+        return;
+      }
+    }
+  }
+
+  tailDeath() {
+    this.tail = initialLength;
+    this.score = 0;
+    this.trail = [];
+    this.death = false;
   }
 
   spawnApple() {

@@ -43,7 +43,6 @@ export function fetchHighScores() {
           dispatch(updateHighScores(highScores));
         },
         error => {
-          console.log(error);
           dispatch(failedHighScores(error));
         }
       )

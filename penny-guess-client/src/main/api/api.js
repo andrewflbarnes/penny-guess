@@ -12,7 +12,7 @@ const api = {
     return response.json();
   },
 
-  async addHighScore({name, score}) {
+  async addHighScore(name, score) {
     const response = await fetch(endpoints.highScores, {
       method: 'POST',
       body: JSON.stringify({

@@ -8,7 +8,9 @@ import {
   SNAKE_GAME_DEATH,
   SNAKE_SUBMIT_DISPLAY,
   SNAKE_SUBMIT_NAME_UPDATE,
+  SNAKE_GAME_VELOCITY_UPDATE,
 } from "./action_names";
+import api from '../api';
 
 export function updateSnakeSpeed(speed) {
   return {
@@ -19,7 +21,7 @@ export function updateSnakeSpeed(speed) {
 
 export function updateSnakeVelocity(velocity) {
   return {
-    type: SNAKE_GAME_SPEED_UPDATE,
+    type: SNAKE_GAME_VELOCITY_UPDATE,
     velocity,
   }
 }
@@ -34,6 +36,21 @@ export function updateSnakeColourScheme(colorScheme) {
 export function tickSnake() {
   return {
     type: SNAKE_GAME_TICK
+  }
+}
+
+export function tickSnakeAndHandleDeath() {
+  return (dispatch, getState) => {
+    dispatch(tickSnake());
+
+    const { death, score } = getState().snake.game.snakeState;
+
+    if (death) {
+      dispatch(displaySubmit(true, score));
+      dispatch(deathSnake());
+      dispatch(pauseSnake());
+      dispatch(displaySnake(false));
+    }
   }
 }
 
@@ -59,14 +76,15 @@ export function setSnakeInterval(interval) {
 
 export function unpauseSnake() {
   return (dispatch, getState) => {
-    const { speed, interval } = getState().snake.game;
+    const { snakeState, interval } = getState().snake.game;
+    const { speed } = snakeState;
 
     if (interval) {
       return
     }
 
     const newInterval = setInterval(() => {
-      dispatch(tickSnake());
+      dispatch(tickSnakeAndHandleDeath());
     }, 1000 / speed);
 
     dispatch(setSnakeInterval(newInterval));
@@ -79,19 +97,11 @@ export function deathSnake() {
   }
 }
 
-export function deathSnakeAndUpdateDisplay() {
-  return dispatch => {
-    dispatch(deathSnake());
-    dispatch(pauseSnake());
-    dispatch(displaySnake(false));
-    dispatch(displaySubmit(true));
-  }
-}
-
-export function displaySubmit(display) {
+export function displaySubmit(display, score = 0) {
   return {
     type: SNAKE_SUBMIT_DISPLAY,
     display,
+    score,
   }
 }
 
@@ -103,7 +113,13 @@ export function updateSubmitName(name) {
 }
 
 export function submitScore() {
-  return {
-    type: SNAKE_SUBMIT_PERFORM,
+  return (dispatch, getState) => {
+    const { name, score } = getState().snake.submit;
+    api.addHighScore(name, score)
+      .then(() => {
+        dispatch(displaySubmit(false));
+        dispatch(displaySnake(true));
+        dispatch(unpauseSnake());
+      })
   }
 }

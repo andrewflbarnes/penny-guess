@@ -1,42 +1,50 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import SnakeSubmitHighScore from './SnakeSubmitHighScore';
 import SnakeGame from "./SnakeGame";
-import SnakeEngine from "./SnakeEngine";
-import api from '../../api/index';
 import SCHEMES from '../schemes';
 import {Link} from "react-router-dom";
 import ROUTES from "../../routes/routes";
+import * as actions from '../action_creators';
 
 const propTypes = {
-  speed: PropTypes.number,
-  tiles: PropTypes.number,
+  unpauseSnake: PropTypes.func.isRequired,
+  displaySnake: PropTypes.func.isRequired,
+  displaySubmit: PropTypes.func.isRequired,
+  updateSnakeColourScheme: PropTypes.func.isRequired,
+  updateSnakeVelocity: PropTypes.func.isRequired,
+  updateSubmitName: PropTypes.func.isRequired,
+  game: PropTypes.shape({
+    showSnake: PropTypes.bool.isRequired,
+    colorScheme: PropTypes.shape({
+      bgColor: PropTypes.string.isRequired,
+      snakeHeadColor: PropTypes.string.isRequired,
+      snakeBodyColor: PropTypes.string.isRequired,
+      appleColor: PropTypes.string.isRequired,
+    }).isRequired,
+    snakeState: PropTypes.shape({
+      score: PropTypes.number.isRequired,
+      highScore: PropTypes.number.isRequired,
+      ax: PropTypes.number.isRequired,
+      ay: PropTypes.number.isRequired,
+      trail: PropTypes.arrayOf(PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+      })).isRequired,
+    }),
+  }).isRequired,
+  submit: PropTypes.shape({
+    showSubmit: PropTypes.bool.isRequired,
+    score: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
-const defaultProps = {
-  speed: 15,
-  tiles: 20,
-};
-
-export default class Snake extends React.Component {
+export class RawSnake extends React.Component {
   constructor(props) {
     super(props);
 
-    const snakeEngine = new SnakeEngine(props.tiles, props.speed);
-
-    this.state = {
-      tick: 0,
-      score: 0,
-      highScore: 0,
-      name: '',
-      colorScheme: SCHEMES.classic,
-      snakeEngine,
-      interval: {},
-      showSnake: true,
-      showSubmit: false,
-    };
-
-    this.handleDeath = this.handleDeath.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
     this.rotateColorScheme = this.rotateColorScheme.bind(this);
@@ -44,91 +52,37 @@ export default class Snake extends React.Component {
   }
 
   componentDidMount() {
-    const { snakeEngine } = this.state;
+    const { unpauseSnake, displaySnake, displaySubmit } = this.props;
 
-    this.setState({
-      interval: this.startGameTick(snakeEngine),
-    });
-
+    displaySnake(true);
+    displaySubmit(false);
+    unpauseSnake();
     document.addEventListener("keydown", this.keyPush);
   }
 
   componentWillUnmount() {
+    const { pauseSnake } = this.props;
+
     document.removeEventListener("keydown", this.keyPush);
-    this.stopGameTick();
-  }
-
-  startGameTick(newSnakeEngine) {
-    const { snakeEngine: currentSnakeEngine } = this.state;
-    const { speed } = this.props;
-    const snakeEngine = newSnakeEngine || currentSnakeEngine;
-
-    return setInterval(() => {
-      snakeEngine.game();
-
-      const { tick } = this.state;
-      const { score, highScore } = snakeEngine;
-
-      this.setState({
-        tick: tick + 1,
-        score,
-        highScore,
-      })
-    }, 1000 / speed);
-  }
-
-  stopGameTick() {
-    const { interval } = this.state;
-
-    clearInterval(interval);
+    pauseSnake();
   }
 
   handlePause() {
-    const { interval } = this.state;
+    const { pauseSnake, unpauseSnake, game } = this.props;
+    const { interval } = game;
 
-    if (interval) {
-      this.pause();
+    if (typeof interval !== 'undefined' || interval) {
+      pauseSnake();
     } else {
-      this.unpause();
+      unpauseSnake();
     }
-  }
-
-  pause() {
-    const { interval } = this.state;
-
-    if (interval) {
-      clearInterval(interval);
-
-      this.setState({
-        interval: undefined,
-      });
-    }
-  }
-
-  unpause() {
-    const { interval } = this.state;
-
-    if (!interval) {
-      this.setState({
-        interval: this.startGameTick(),
-      });
-    }
-  }
-
-  handleDeath() {
-    const { snakeEngine } = this.state;
-
-    snakeEngine.tailDeath();
-    this.handlePause(true);
-    this.setState({
-      showSubmit: true,
-      showSnake: false,
-    })
   }
 
   rotateColorScheme() {
+    const { updateSnakeColourScheme, game } = this.props;
+    const { colorScheme } = game;
+
     let newScheme;
-    const { colorScheme } = this.state;
 
     if (colorScheme === SCHEMES.classic) {
       newScheme = SCHEMES.blend;
@@ -136,13 +90,12 @@ export default class Snake extends React.Component {
       newScheme = SCHEMES.classic;
     }
 
-    this.setState({
-      colorScheme: newScheme
-    })
+    updateSnakeColourScheme(newScheme);
   }
 
   keyPush(evt) {
-    const { showSnake, snakeEngine } = this.state;
+    const { updateSnakeVelocity, game } = this.props;
+    const { showSnake } = game;
 
     if (!showSnake) {
       return;
@@ -155,19 +108,19 @@ export default class Snake extends React.Component {
         break;
       case 37:
         // left
-        snakeEngine.updateVelocities({vx: -1, vy: 0});
+        updateSnakeVelocity({vx: -1, vy: 0});
         break;
       case 38:
         // up
-        snakeEngine.updateVelocities({vx: 0, vy: -1});
+        updateSnakeVelocity({vx: 0, vy: -1});
         break;
       case 39:
         // right
-        snakeEngine.updateVelocities({vx: 1, vy: 0});
+        updateSnakeVelocity({vx: 1, vy: 0});
         break;
       case 40:
         // down
-        snakeEngine.updateVelocities({vx: 0, vy: 1});
+        updateSnakeVelocity({vx: 0, vy: 1});
         break;
       default:
         // do nothing
@@ -177,26 +130,22 @@ export default class Snake extends React.Component {
   handleNameChange(e) {
     const { value } = e.target;
 
-    this.setState({
-      name: value,
-    })
+    const { updateSubmitName } = this.props;
+    updateSubmitName(value);
   }
 
   handleSubmit(e) {
     e.preventDefault();
 
-    api.addHighScore(this.state).then(() => {
-      this.unpause();
-      this.setState({
-        showSubmit: false,
-        showSnake: true,
-      });
-    });
+    const { submitScore } = this.props;
+    submitScore();
   }
 
   render() {
-    const { snakeEngine, showSnake, score, highScore, colorScheme, showSubmit } = this.state;
-    const { trail, ax, ay } = snakeEngine;
+    const { game, submit } = this.props;
+    const { snakeState, showSnake, colorScheme } = game;
+    const { showSubmit, score: submitScore } = submit;
+    const { trail, ax, ay, highScore, score } = snakeState;
 
     return (
       <div>
@@ -209,14 +158,13 @@ export default class Snake extends React.Component {
             trail={trail}
             ax={ax}
             ay={ay}
-            onDeath={this.handleDeath}
           />
         )}
         {showSubmit && (
           <SnakeSubmitHighScore
             onChange={this.handleNameChange}
             onSubmit={this.handleSubmit}
-            score={score}
+            score={submitScore}
           />
         )}
         <Link to={ROUTES.highScores}>High Scores</Link>
@@ -225,5 +173,21 @@ export default class Snake extends React.Component {
   }
 }
 
-Snake.propTypes = propTypes;
-Snake.defaultProps = defaultProps;
+RawSnake.propTypes = propTypes;
+
+const mapStateToProps = state => {
+  const { snake } = state;
+
+  return {
+    game: snake.game,
+    submit: snake.submit,
+  }
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(actions, dispatch);
+};
+
+const Snake = connect(mapStateToProps, mapDispatchToProps)(RawSnake);
+
+export default Snake;

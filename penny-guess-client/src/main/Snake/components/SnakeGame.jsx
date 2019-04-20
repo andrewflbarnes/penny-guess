@@ -7,7 +7,6 @@ const TILE_SIZE = 20;
 
 const propTypes = {
   rotateColorScheme: PropTypes.func.isRequired,
-  onDeath: PropTypes.func.isRequired,
   score: PropTypes.number.isRequired,
   highScore: PropTypes.number.isRequired,
   colorScheme: PropTypes.shape({
@@ -44,7 +43,7 @@ export default class SnakeGame extends React.Component {
   }
 
   drawSnake() {
-    const { trail, onDeath, colorScheme } = this.props;
+    const { trail, colorScheme } = this.props;
     const { snakeBodyColor, snakeHeadColor } = colorScheme;
     const length = trail.length - 1;
 
@@ -53,8 +52,6 @@ export default class SnakeGame extends React.Component {
 
       if (i === length) {
         color = snakeHeadColor;
-      } else if (trail[i].x === trail[length].x && trail[i].y === trail[length].y) {
-        onDeath();
       }
 
       SnakeGame.drawTile(trail[i].x, trail[i].y, color);
