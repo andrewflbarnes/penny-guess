@@ -9,8 +9,8 @@ const propTypes = {
 export default function HighScoreTableRow({ name, score }) {
   return (
     <tr>
-      <td>{name}</td>
-      <td>{score}</td>
+      <td class="w-50">{name}</td>
+      <td class="w-50">{score}</td>
     </tr>
   )
 }
