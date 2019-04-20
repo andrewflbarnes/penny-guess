@@ -13,7 +13,7 @@
     "test": "npm run lint",
     "mock": "cd src/mock && node server.js",
     "start": "webpack-dev-server --config webpack.dev.js",
-    "prebuild": "rimraf ./target/classes/META-INF/resources/*",
+    "prebuild": "npm install --no-optional && rimraf ./target/classes/META-INF/resources/*",
     "build": "webpack --config webpack.prod.js"
   },
   "dependencies": {
