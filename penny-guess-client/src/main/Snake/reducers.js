@@ -11,7 +11,7 @@ import {
   SNAKE_SUBMIT_DISPLAY,
   SNAKE_SUBMIT_NAME_UPDATE,
 } from './action_names';
-import SnakeEngine from "./components/SnakeEngine";
+import SnakeEngine from "./engine/SnakeEngine";
 import SCHEMES from "./schemes";
 
 /*

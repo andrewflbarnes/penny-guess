@@ -39,21 +39,6 @@ export function tickSnake() {
   }
 }
 
-export function tickSnakeAndHandleDeath() {
-  return (dispatch, getState) => {
-    dispatch(tickSnake());
-
-    const { death, score } = getState().snake.game.snakeState;
-
-    if (death) {
-      dispatch(displaySubmit(true, score));
-      dispatch(deathSnake());
-      dispatch(pauseSnake());
-      dispatch(displaySnake(false));
-    }
-  }
-}
-
 export function displaySnake(display) {
   return {
     type: SNAKE_GAME_DISPLAY,
@@ -74,6 +59,27 @@ export function setSnakeInterval(interval) {
   }
 }
 
+export function deathSnake() {
+  return {
+    type: SNAKE_GAME_DEATH
+  }
+}
+
+export function tickSnakeAndHandleDeath() {
+  return (dispatch, getState) => {
+    dispatch(tickSnake());
+
+    const { death, score } = getState().snake.game.snakeState;
+
+    if (death) {
+      dispatch(displaySubmit(true, score));
+      dispatch(deathSnake());
+      dispatch(pauseSnake());
+      dispatch(displaySnake(false));
+    }
+  }
+}
+
 export function unpauseSnake() {
   return (dispatch, getState) => {
     const { snakeState, interval } = getState().snake.game;
@@ -88,12 +94,6 @@ export function unpauseSnake() {
     }, 1000 / speed);
 
     dispatch(setSnakeInterval(newInterval));
-  }
-}
-
-export function deathSnake() {
-  return {
-    type: SNAKE_GAME_DEATH
   }
 }
 
