@@ -7,8 +7,6 @@ const TILE_SIZE = 20;
 
 const propTypes = {
   rotateColorScheme: PropTypes.func.isRequired,
-  score: PropTypes.number.isRequired,
-  highScore: PropTypes.number.isRequired,
   colorScheme: PropTypes.shape({
     bgColor: PropTypes.string.isRequired,
     snakeHeadColor: PropTypes.string.isRequired,
@@ -79,13 +77,12 @@ export default class SnakeGame extends React.Component {
   }
 
   render() {
-    const { rotateColorScheme, score, highScore } = this.props;
+    const { rotateColorScheme } = this.props;
 
     return (
       <div>
+        <div className="row mb-3" />
         <canvas id={CANVAS_ID} height={CANVAS_SIZE} width={CANVAS_SIZE} onClick={rotateColorScheme} />
-        <h2>Score: {score}</h2>
-        <h2>High Score: {highScore}</h2>
       </div>
     );
   }
