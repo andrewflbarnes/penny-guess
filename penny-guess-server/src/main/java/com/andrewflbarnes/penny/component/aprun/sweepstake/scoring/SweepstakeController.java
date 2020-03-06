@@ -32,7 +32,7 @@ public class SweepstakeController {
 
     private SweepstakeService sweepstakeService;
 
-    @CrossOrigin(origins = "https://www.andrewandpenny.run/")
+    @CrossOrigin(origins = "https://www.andrewandpenny.run")
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
@@ -65,7 +65,7 @@ public class SweepstakeController {
         return ResponseEntity.ok(sanitised);
     }
 
-    @CrossOrigin(origins = "https://www.andrewandpenny.run/")
+    @CrossOrigin(origins = "https://www.andrewandpenny.run")
     @GetMapping
     public Object getSweepstakes(
             @RequestParam(name = "count", required = false, defaultValue = "1000") int count) {
