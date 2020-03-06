@@ -16,4 +16,5 @@ public class SweepstakeEntry {
     private String runner;
     private String time;
     private String message;
+    private String contact;
 }

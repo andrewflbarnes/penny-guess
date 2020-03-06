@@ -1,6 +1,7 @@
 package com.andrewflbarnes.penny.component.aprun.sweepstake.scoring;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
+
 @RestController
 @RequestMapping(
         produces = MediaType.APPLICATION_JSON_VALUE,
         path = "api/sweepstake"
 )
 @AllArgsConstructor
+@Slf4j
 public class SweepstakeController {
 
     private static final String TIME_REGEX = "\\d*\\d:\\d\\d:\\d\\d";
@@ -37,29 +41,39 @@ public class SweepstakeController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity addSweepstake(@RequestBody SweepstakeEntry sweepstakeEntry) {
-        if (StringUtils.isEmpty(sweepstakeEntry.getRunner()) ||
-                StringUtils.isEmpty(sweepstakeEntry.getName()) ||
-                StringUtils.isEmpty(sweepstakeEntry.getTime())) {
+        final String name = sweepstakeEntry.getName();
+        final String time = sweepstakeEntry.getTime();
+        final String runner = sweepstakeEntry.getRunner();
+
+        if (StringUtils.isEmpty(runner) ||
+                StringUtils.isEmpty(name) ||
+                StringUtils.isEmpty(time)) {
+            log.debug("name ({}), time ({}) and runner ({}) must not be null", name, time, runner);
             return asErrorResponse("NAME, RUNNER and TIME must be specified");
         }
 
         final SweepstakeEntry sanitised = SweepstakeEntry.builder()
-                .name(sweepstakeEntry.getName().trim())
-                .runner(sweepstakeEntry.getRunner().trim())
-                .time(sweepstakeEntry.getTime().trim())
-                .message(Optional.ofNullable(sweepstakeEntry.getMessage()).map(String::trim).orElse(""))
+                .name(name.trim())
+                .runner(runner.trim())
+                .time(time.trim())
+                .message(ofNullable(sweepstakeEntry.getMessage()).orElse("").trim())
+                .contact(ofNullable(sweepstakeEntry.getContact()).orElse("").trim())
                 .build();
+        log.debug("Sanitised sweepstake entry from {} to {}", sweepstakeEntry, sanitised);
 
-        if (!sanitised.getTime().matches(TIME_REGEX)) {
+        if (!time.matches(TIME_REGEX)) {
+            log.debug("Time ({}) does not match format \"{}\"", time, TIME_REGEX);
             return asErrorResponse("TIME field must match HH:MM:SS format");
         }
 
-        if (!ALLOWABLE_RUNNERS.contains(sanitised.getRunner())) {
+        if (!ALLOWABLE_RUNNERS.contains(runner)) {
+            log.debug("Runner ({}) must be one of {}", runner, ALLOWABLE_RUNNERS);
             return asErrorResponse("Runner must be one of " + ALLOWABLE_RUNNERS);
         }
 
         if (!sweepstakeService.addSweepstake(sanitised)) {
-            return asErrorResponse("Sweepstake already exists for " + sanitised.getName());
+            log.debug("Sweepstake entry already exists for {}", name);
+            return asErrorResponse("Sweepstake already exists for " + name);
         }
 
         return ResponseEntity.ok(sanitised);

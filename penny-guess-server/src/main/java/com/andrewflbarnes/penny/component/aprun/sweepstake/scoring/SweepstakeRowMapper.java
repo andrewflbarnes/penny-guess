@@ -12,7 +12,8 @@ public class SweepstakeRowMapper implements RowMapper<SweepstakeEntry> {
                 resultSet.getString("name"),
                 resultSet.getString("runner"),
                 resultSet.getString("time"),
-                resultSet.getString("message")
+                resultSet.getString("message"),
+                resultSet.getString("contact")
         );
     }
 }
