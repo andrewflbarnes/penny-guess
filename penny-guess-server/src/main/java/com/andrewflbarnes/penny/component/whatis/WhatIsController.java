@@ -23,7 +23,6 @@ public class WhatIsController {
 
     private WhatIsService whatIsService;
 
-    @CrossOrigin
     @GetMapping
     public List<String> getWhatIs() {
         return whatIsService.getWhatIs();
