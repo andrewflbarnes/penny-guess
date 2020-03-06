@@ -32,6 +32,8 @@ $ echo DATABASE_URL='jdbc:postgresql://localhost:5432/postgres?user=postgres&pas
   > .env
 $ echo PORT=5005 \
   >> .env
+$ echo SPRING_PROFILES_INCLUDE=dev \
+  >> .env
 $ heroku local:start
 ```
 
