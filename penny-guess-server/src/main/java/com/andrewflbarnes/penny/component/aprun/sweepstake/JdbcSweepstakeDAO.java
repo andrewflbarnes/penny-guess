@@ -1,8 +1,8 @@
-package com.andrewflbarnes.penny.component.aprun.sweepstake.scoring;
+package com.andrewflbarnes.penny.component.aprun.sweepstake;
 
 import com.andrewflbarnes.penny.util.Utils;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,25 +11,30 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@AllArgsConstructor
 @Slf4j
 public class JdbcSweepstakeDAO implements SweepstakeDAO {
 
-    private static final String SQL_INSERT_SWEEPSTAKE =
-            Utils.loadResourceContents("sql/postgres/sweepstake_insert.sql");
-    private static final String SQL_SELECT_USER_SWEEPSTAKE =
-            Utils.loadResourceContents("sql/postgres/sweepstake_select_by_user.sql");
-    private static final String SQL_SELECT_SWEEPSTAKES =
-            Utils.loadResourceContents("sql/postgres/sweepstake_select_all.sql");
-
     private final RowMapper<SweepstakeEntry> rowMapper = new SweepstakeRowMapper();
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final String sqlInsertSweepstake;
+    private final String sqlSelectUserSweepstake;
+    private final String sqlSelectSweepstakes;
 
-    public boolean addSweepstake(SweepstakeEntry sweepstakeEntry) {
+    public JdbcSweepstakeDAO(final JdbcTemplate jdbcTemplate, @Qualifier("dbType") final String dbType) {
+        this.jdbcTemplate = jdbcTemplate;
+        sqlInsertSweepstake =
+                Utils.loadSqlResourceContents(dbType, "sweepstake_insert.sql");
+        sqlSelectUserSweepstake =
+                Utils.loadSqlResourceContents(dbType, "sweepstake_select_by_user.sql");
+        sqlSelectSweepstakes =
+                Utils.loadSqlResourceContents(dbType, "sweepstake_select_all.sql");
+    }
+
+    public boolean addSweepstake(final SweepstakeEntry sweepstakeEntry) {
         log.debug("Persisting sweepstake entry {}", sweepstakeEntry);
         return jdbcTemplate.update(
-                SQL_INSERT_SWEEPSTAKE,
+                sqlInsertSweepstake,
                 sweepstakeEntry.getName(),
                 sweepstakeEntry.getRunner(),
                 sweepstakeEntry.getTime(),
@@ -37,11 +42,11 @@ public class JdbcSweepstakeDAO implements SweepstakeDAO {
                 sweepstakeEntry.getContact()) > 0;
     }
 
-    public SweepstakeEntry getSweepstake(String name) {
+    public SweepstakeEntry getSweepstake(final String name) {
         try {
             log.debug("Retrieving sweepstake entry for {}", name);
             return jdbcTemplate.queryForObject(
-                    SQL_SELECT_USER_SWEEPSTAKE,
+                    sqlSelectUserSweepstake,
                     new Object[]{name},
                     rowMapper);
         } catch (EmptyResultDataAccessException e) {
@@ -50,10 +55,10 @@ public class JdbcSweepstakeDAO implements SweepstakeDAO {
         }
     }
 
-    public List<SweepstakeEntry> getSweepstakes(int count) {
+    public List<SweepstakeEntry> getSweepstakes(final int count) {
         log.debug("Retrieving {} sweepstake entries", count);
         return jdbcTemplate.query(
-                SQL_SELECT_SWEEPSTAKES,
+                sqlSelectSweepstakes,
                 new Object[]{count},
                 rowMapper);
     }

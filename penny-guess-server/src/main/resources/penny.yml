@@ -1,0 +1,24 @@
+server.port: ${PORT:5005}
+
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+
+aprun:
+  runners:
+  - Andrew
+  - Penny
+  database: postgres
+
+penny:
+  web:
+    allowedOrigins:
+    - "https://www.pennyguess.com"
+    - "https://api.pennyguess.com"
+    - "https://pennyguess.com"
+
+logging.level:
+  org.springframework: INFO
+  com.andrewflbarnes: INFO

@@ -32,10 +32,12 @@ $ echo DATABASE_URL='jdbc:postgresql://localhost:5432/postgres?user=postgres&pas
   > .env
 $ echo PORT=5005 \
   >> .env
-$ echo SPRING_PROFILES_INCLUDE=dev \
+$ echo SPRING_PROFILES_ACTIVE=dev \
   >> .env
 $ heroku local:start
 ```
+
+Note that by default the port and JDBC URL are already set to these valuse in the dev profile.
 
 Your app should now be running on [localhost:5005](http://localhost:5005/)
 reading and writing data to your postgres DB instnace.

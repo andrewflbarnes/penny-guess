@@ -1,4 +1,4 @@
-package com.andrewflbarnes.penny.component.aprun.sweepstake.scoring;
+package com.andrewflbarnes.penny.component.aprun.sweepstake;
 
 import org.springframework.jdbc.core.RowMapper;
 

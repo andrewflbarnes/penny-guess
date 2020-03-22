@@ -1,4 +1,4 @@
-package com.andrewflbarnes.penny.component.aprun.sweepstake.scoring;
+package com.andrewflbarnes.penny.component.aprun.sweepstake;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

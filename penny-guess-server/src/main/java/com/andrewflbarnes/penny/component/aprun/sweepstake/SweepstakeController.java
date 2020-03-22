@@ -1,12 +1,10 @@
-package com.andrewflbarnes.penny.component.aprun.sweepstake.scoring;
+package com.andrewflbarnes.penny.component.aprun.sweepstake;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
+import java.util.List;
 
 import static java.util.Optional.ofNullable;
 
@@ -26,17 +22,19 @@ import static java.util.Optional.ofNullable;
         produces = MediaType.APPLICATION_JSON_VALUE,
         path = "api/sweepstake"
 )
-@AllArgsConstructor
 @Slf4j
 public class SweepstakeController {
 
-    private static final String TIME_REGEX = "\\d*\\d:\\d\\d:\\d\\d";
-    private static final Collection<String> ALLOWABLE_RUNNERS = Collections.unmodifiableCollection(
-            Arrays.asList("Penny", "Andrew"));
+    private static final String TIME_REGEX = "\\d*\\d:[0-5]\\d:[0-5]\\d";
 
     private SweepstakeService sweepstakeService;
+    private List<String> runners;
 
-    @CrossOrigin(origins = "https://www.andrewandpenny.run")
+    public SweepstakeController(SweepstakeService sweepstakeService, @Qualifier("runners") List<String> runners) {
+        this.sweepstakeService = sweepstakeService;
+        this.runners = runners;
+    }
+
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
@@ -66,9 +64,9 @@ public class SweepstakeController {
             return asErrorResponse("TIME field must match HH:MM:SS format");
         }
 
-        if (!ALLOWABLE_RUNNERS.contains(runner)) {
-            log.debug("Runner ({}) must be one of {}", runner, ALLOWABLE_RUNNERS);
-            return asErrorResponse("Runner must be one of " + ALLOWABLE_RUNNERS);
+        if (!runners.contains(runner)) {
+            log.debug("Runner ({}) must be one of {}", runner, runners);
+            return asErrorResponse("Runner must be one of " + runners);
         }
 
         if (!sweepstakeService.addSweepstake(sanitised)) {
@@ -79,7 +77,6 @@ public class SweepstakeController {
         return ResponseEntity.ok(sanitised);
     }
 
-    @CrossOrigin(origins = "https://www.andrewandpenny.run")
     @GetMapping
     public Object getSweepstakes(
             @RequestParam(name = "count", required = false, defaultValue = "1000") int count) {
