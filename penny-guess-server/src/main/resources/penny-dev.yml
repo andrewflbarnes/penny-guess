@@ -9,5 +9,6 @@ corona:
 
 logging.level:
   com.andrewflbarnes: DEBUG
+  org.keycloak: DEBUG
 
 management.endpoints.web.exposure.include: "*"

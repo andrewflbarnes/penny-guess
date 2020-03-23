@@ -1,0 +1,14 @@
+keycloak:
+  auth-server-url: "http://localhost:8901/auth"
+  realm: kaas-dev
+  resource: kaas-site-react
+  public-client: true
+#  bearer-only: true
+  principal-attribute: preferred_username
+  use-resource-role-mappings: true
+  security-constraints:
+  - auth-roles:
+    - kaas-updater
+    security-collections:
+    - patterns:
+      - "/api/*"
