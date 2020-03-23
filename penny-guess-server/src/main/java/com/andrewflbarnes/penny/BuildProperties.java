@@ -1,4 +1,4 @@
-package com.andrewflbarnes.penny.web;
+package com.andrewflbarnes.penny;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,4 +12,6 @@ import org.springframework.stereotype.Component;
 public class BuildProperties {
     @Value("${version}")
     private String version;
+    @Value("${commit}")
+    private String commit;
 }

@@ -2,10 +2,12 @@ spring:
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres}
 
-penny:
-  web:
-    allowedOrigins:
+corona:
+  cors:
+    exact:
     - "*"
 
 logging.level:
   com.andrewflbarnes: DEBUG
+
+management.endpoints.web.exposure.include: "*"

@@ -3,8 +3,6 @@ server.port: ${PORT:5005}
 spring:
   datasource:
     url: ${DATABASE_URL}
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE}
 
 aprun:
   runners:
@@ -12,12 +10,19 @@ aprun:
   - Penny
   database: postgres
 
-penny:
-  web:
-    allowedOrigins:
-    - "https://www.pennyguess.com"
-    - "https://api.pennyguess.com"
-    - "https://pennyguess.com"
+corona:
+  cors:
+    generators:
+    - domains:
+      - "pennyguess.com"
+      - "andrewandpenny.run"
+      subdomains:
+      - "www"
+      - "api"
+      rootdomain: true
+      protocols:
+      - "http"
+      - "https"
 
 logging.level:
   org.springframework: INFO

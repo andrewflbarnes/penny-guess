@@ -1,16 +1,12 @@
 package com.andrewflbarnes.penny;
 
 import com.andrewflbarnes.penny.component.aprun.AprunConfig;
-import com.andrewflbarnes.penny.web.BuildProperties;
 import com.andrewflbarnes.penny.web.WebConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 
@@ -57,7 +53,7 @@ public class Application extends SpringBootServletInitializer {
         }
 
         private void report() {
-            log.info("***** VERSION: {} *****", buildProperties.getVersion());
+            log.info("***** VERSION: {} ({}) *****", buildProperties.getVersion(), buildProperties.getCommit());
             log.info("APRUN properties: {}", aprunProperties);
             log.info("WEB properties: {}", webProperties);
         }
