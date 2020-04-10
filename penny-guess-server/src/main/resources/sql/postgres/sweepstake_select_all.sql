@@ -1,4 +1,4 @@
   SELECT *
-    FROM t_aprun_sweepstake
+    FROM aprun_sweepstake
 ORDER BY "time" DESC
    LIMIT ?
