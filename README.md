@@ -57,13 +57,24 @@ and forwarding api requests to [localhost:5007](http://localhost:5007/).
 
 Deploys for this project are done manually through the Heroku dashboard for the `master` branch.
 
-## Documentation
+## Retrieving a bearer token for API calls
 
-For more information about using Java on Heroku, see these Dev Center articles:
+Start the keycloak server with the below command in `andrewflbarnes/kaas-site-react`
+```bash
+npm keycloak
+```
 
-- [Java on Heroku](https://devcenter.heroku.com/categories/java)
+Login to the console as admin:admin and assign the `kaas-updater` role to `kaas-admin` under the `kaas-site-react` client.
 
-## React
+User curl to retrieve a token and use it in an API call
+```bash
+API_TOKEN=$(curl \
+  -d 'username=kaas-admin' \
+  -d 'password=admin' \
+  -d 'client_id=kaas-site-react' \
+  -d 'grant_type=password' \
+  localhost:8901/auth/realms/kaas-dev/protocol/openid-connect/token \
+  | jq --raw-output .access_token)
 
-Currently migrating front end code to react in `penny-guess-client`
-using `node v10.15.0 (npm v6.4.1)`.
+curl -H "Authorization: Bearer ${API_TOKEN}" localhost:5005/api/whatis
+```

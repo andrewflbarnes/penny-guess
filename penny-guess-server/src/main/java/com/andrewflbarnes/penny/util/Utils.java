@@ -20,7 +20,7 @@ public class Utils {
      * @return the SQL command from the file
      */
     public static String loadSqlResourceContents(final String dbType, final String resource) {
-        return loadResourceContents(String.format("/sql/%s/%s", dbType, resource));
+        return loadResourceContents(String.format("sql/%s/%s", dbType, resource));
     }
 
     public static String loadResourceContents(final String resource) {
