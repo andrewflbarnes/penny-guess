@@ -44,7 +44,7 @@
     "eslint-plugin-react": "^7.12.4",
     "exlint": "^0.1.6",
     "fs": "0.0.1-security",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^5.5.0",
     "jshint": "^2.10.2",
     "json-server": "^0.14.2",
     "rimraf": "^2.6.3",
