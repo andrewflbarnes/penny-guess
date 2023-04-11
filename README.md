@@ -1,15 +1,14 @@
 # penny-guess
 
-Something to annoy Penny with
-
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+Something to annoy Penny with.
 
 ## Running Locally - full deployment
 
-Make sure you have Java and Maven installed.  Also, install the [Heroku CLI](https://cli.heroku.com/).
+Make sure you have Java and Maven installed.
 
-First, provision the database tables
+First, provision the database tables on some local cluster (e.g. native or running on docker)
 ```bash
+docker run --rm -e POSTGRES_PASSWORD=password -d --name postgres -p "5432:5432" postgres:10
 psql -U postgres -d postgres
 ```
 ```postgresql
@@ -25,16 +24,28 @@ CREATE TABLE t_what_is
 Then clone, build and run the code
 
 ```sh
-$ git clone https://github.com/andrewflbarnes/penny-guess
-$ cd penny-guess
-$ mvn install
-$ echo DATABASE_URL='jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres' \
+git clone https://github.com/andrewflbarnes/penny-guess
+cd penny-guess
+
+mvn package
+
+echo DATABASE_URL='jdbc:postgresql://localhost:5432/postgres?user=postgres&password=password' \
   > .env
-$ echo PORT=5005 \
+echo PORT=5005 \
   >> .env
-$ echo SPRING_PROFILES_INCLUDE=dev \
+echo SPRING_PROFILES_INCLUDE=dev \
   >> .env
-$ heroku local:start
+
+(export $(cat .env | xargs); java -jar penny-guess-server/target/*.jar)
+```
+
+Alternatively build an run with docker:
+```bash
+docker build . -t penny-guess:latest
+
+# create env file as above but use host.docker.internal instead of localhost.
+
+docker run --rm --name penny-guess -p "5005:5005" --env-file .env penny-guess:latest
 ```
 
 Your app should now be running on [localhost:5005](http://localhost:5005/)
@@ -51,15 +62,39 @@ npm run mock
 Your app should now be running on [localhost:5006](http://localhost:5006/) 
 and forwarding api requests to [localhost:5007](http://localhost:5007/).
 
-## Deploying to Heroku
+## Deploying to Fly
 
-Deploys for this project are done manually through the Heroku dashboard for the `master` branch.
+Ensure the fly CLI is intsalled:
+```bash
+brew install flyctl
+```
 
-## Documentation
+Create a postgres cluster:
+```bash
+fly postgres create
+```
 
-For more information about using Java on Heroku, see these Dev Center articles:
+Create the app:
+```bash
+# DO NOT DEPOY WHEN ASKED
+fly launch
+```
 
-- [Java on Heroku](https://devcenter.heroku.com/categories/java)
+Attach the postgres cluster to the app cluster
+```bash
+fly postgres attach <db name> -a <app name>
+```
+
+Use the returned string to set the app secret `DATABASE_URL` as a valid jdbc URL, aso set `PORT` to 8080:
+```bash
+fly secrets set DATABASE_URL="jdbc:postgresql://<app name>.flycast:5432/<app db>?sslmode=disable&user=<app db>&password=password"
+fly secrets set PORT=8080
+```
+
+Deploy the app and access from `<app name>.fly.dev`:
+```bash
+fly deploy
+```
 
 ## React
 
