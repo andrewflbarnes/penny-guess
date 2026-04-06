@@ -5,7 +5,7 @@ WORKDIR /build
 
 COPY . .
 
-RUN mvn package
+RUN --mount=type=cache,target=/root/.m2/repository mvn package
 
 FROM eclipse-temurin:11-jre-alpine
 
@@ -18,4 +18,4 @@ WORKDIR /app
 
 COPY --from=builder /build/penny-guess-server/target/*jar pg.jar
 
-ENTRYPOINT ["java", "-jar", "pg.jar", "-Xmx192m"]
+ENTRYPOINT ["java", "-jar", "pg.jar", "-Xmx128m"]
