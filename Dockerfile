@@ -18,4 +18,4 @@ WORKDIR /app
 
 COPY --from=builder /build/penny-guess-server/target/*jar pg.jar
 
-ENTRYPOINT ["java", "-jar", "pg.jar"]
+ENTRYPOINT ["java", "-jar", "pg.jar", "-Xmx192m"]
