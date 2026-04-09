@@ -7,7 +7,7 @@ import * as actions from '../action_creators';
 
 const propTypes = {
   highScores: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    user: PropTypes.string.isRequired,
     score: PropTypes.number.isRequired,
   })).isRequired,
   status: PropTypes.shape({

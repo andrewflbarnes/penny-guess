@@ -4,7 +4,7 @@ import HighScoreTableRow from './HighScoreTableRow';
 
 const propTypes = {
   highScores: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    user: PropTypes.string.isRequired,
     score: PropTypes.number.isRequired,
   })).isRequired,
   status: PropTypes.shape({
@@ -30,7 +30,7 @@ export default function HighScoreTable({highScores, status}) {
         {highScores
           .sort((a, b) => b.score - a.score)
           .map(hs => (
-            <HighScoreTableRow key={hs.name} name={hs.name} score={hs.score} />
+            <HighScoreTableRow key={hs.user} user={hs.user} score={hs.score} />
           ))
         }
         </tbody>
