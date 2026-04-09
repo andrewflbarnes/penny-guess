@@ -1,6 +1,7 @@
+const API_BASE_URL = 'https://api.pennyguess.com/functions/aflb-pg-api/executions';
 const endpoints = {
-  highScores: './api/scores/high',
-  whatIs: './api/whatis',
+  highScores: `${API_BASE_URL}?type=score`,
+  whatIs: `${API_BASE_URL}?type=what`
 };
 
 const api = {

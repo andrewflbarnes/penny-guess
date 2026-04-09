@@ -38,9 +38,9 @@ export function fetchHighScores() {
 
     api.getHighScores()
       .then(
-        highScores => {
+        response => {
           dispatch(loadedHighScores());
-          dispatch(updateHighScores(highScores));
+          dispatch(updateHighScores(response.scores));
         },
         error => {
           dispatch(failedHighScores(error));
